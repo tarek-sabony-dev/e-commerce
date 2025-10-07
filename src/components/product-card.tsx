@@ -4,8 +4,10 @@ import { IconHeart, IconHeartFilled, IconStar, IconStarFilled, IconStarHalfFille
 import Image from "next/image";
 import { Separator } from "./ui/separator";
 import { Badge } from "./ui/badge";
+import { Product } from "@/types/product";
 
-export default function ProductCard() {
+export default function ProductCard({ product } : { product: Product }) {
+  console.log(product)
   return (
     <>
       <Card className="w-full h-full rounded-2xl">
@@ -18,13 +20,13 @@ export default function ProductCard() {
         </CardHeader>
         <CardContent>
           <Separator/>
-          <Image width={"400"} height={"400"} src={"/red-headphones.png"} alt="gloves" className="w-full hover:scale-105 transition-all" />
+          <Image width={400} height={400} src={product.images} alt={product.name} className="w-full hover:scale-105 transition-all" />
           <Separator />
         </CardContent>
         <CardFooter className="flex flex-col justify-center items-start gap-4 ">
           <div className="flex flex-col justify-center items-start gap-1">
-            <h1 className="font-semibold">Premium boxing gloves.</h1>
-            <p className="">Boxing gloves for the champion inside you.</p>
+            <h1 className="font-semibold">{product.name}</h1>
+            <p className="">{product.description}</p>
           </div>
           <div className="flex items-center gap-1">
             <IconStarFilled size={16} />
@@ -33,7 +35,7 @@ export default function ProductCard() {
             <IconStarHalfFilled size={16} />
             <IconStar size={16} />
             <Badge variant={"outline"}>
-              3.5
+              {product.rating}
             </Badge>
           </div>
           <div className="w-full flex justify-between">
@@ -42,11 +44,11 @@ export default function ProductCard() {
             </Button>
             <Badge variant={"outline"} className="flex gap-2">
               <span>
-                <s>$512.55</s>
+                <s>${product.price}</s>
               </span>
               <Separator orientation="vertical" />
               <span>
-                $499.99
+                ${product.discountedPrice}
               </span>
             </Badge>
           </div>

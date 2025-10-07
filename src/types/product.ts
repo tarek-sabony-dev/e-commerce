@@ -7,6 +7,7 @@ export interface Product {
   images: string
   categoryId: number
   stoke: number
-  createedAt: Date
-  updatedAt: Date
+  rating: number
+  createdAt: string
+  updatedAt: string
 }
