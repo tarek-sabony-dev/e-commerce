@@ -45,7 +45,7 @@ const initialState : Product[] = [
   }
 ]
 
-export const productSlice = createSlice({
+export const productsSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {
@@ -54,9 +54,9 @@ export const productSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const {  } = productSlice.actions
+export const {  } = productsSlice.actions
 
-export default productSlice.reducer
+export default productsSlice.reducer
 
 // Selectors
 export const selectProducts = (state: RootState) => state.products
