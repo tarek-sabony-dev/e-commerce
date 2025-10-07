@@ -7,7 +7,7 @@ import { Badge } from "./ui/badge";
 import { Product } from "@/types/product";
 
 export default function ProductCard({ product } : { product: Product }) {
-  console.log(product)
+
   return (
     <>
       <Card className="w-full h-full rounded-2xl">

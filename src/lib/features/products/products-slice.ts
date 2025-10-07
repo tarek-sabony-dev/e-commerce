@@ -59,9 +59,4 @@ export const {  } = productSlice.actions
 export default productSlice.reducer
 
 // Selectors
-const selectProductsState = (state: RootState) => state.products
-
-export const selectProducts = createSelector(
-  [selectProductsState],
-  (productsState) => productsState
-)
+export const selectProducts = (state: RootState) => state.products
