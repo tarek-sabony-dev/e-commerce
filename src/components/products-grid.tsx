@@ -10,7 +10,6 @@ import { Product } from "@/types/product";
 export default function ShopGrid() {
   const products: Product[] = useAppSelector(selectProducts)
   const categories : Category[] = useAppSelector(selectCategories)
-  console.log(categories)
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

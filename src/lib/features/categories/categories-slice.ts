@@ -3,12 +3,7 @@ import { Category } from "@/types/category";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState : Category[] = [
-  {
-    id: 1,
-    name: "Sports",
-    createdAt: Date.now().toString(),
-    updatedAt: Date.now().toString()
-  }
+  
 ]
 
 export const categoriesSlice = createSlice({
