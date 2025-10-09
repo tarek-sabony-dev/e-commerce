@@ -5,7 +5,6 @@ import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
-import StoreProvider from "./StoreProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +29,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} >
-        <StoreProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             <SidebarProvider
               style={
@@ -47,7 +45,6 @@ export default function RootLayout({
               </SidebarInset>
             </SidebarProvider>
           </ThemeProvider>
-        </StoreProvider>
       </body>
     </html>
   );
