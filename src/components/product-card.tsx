@@ -5,8 +5,11 @@ import Image from "next/image";
 import { Separator } from "./ui/separator";
 import { Badge } from "./ui/badge";
 import { Product } from "@/types/product";
+import { useCartStore } from "@/stores/cart-store";
 
 export default function ProductCard({ product } : { product: Product }) {
+  const { addItem, removeItem, items } = useCartStore()
+  const isInCart = items.some(item => item.productId === product.id)
 
   return (
     <>
@@ -21,12 +24,12 @@ export default function ProductCard({ product } : { product: Product }) {
         <CardContent>
           <Separator/>
           <Image width={400} height={400} src={product.images} alt={product.name} className="w-full hover:scale-105 transition-all" />
-          <Separator />
+          <Separator/>
         </CardContent>
         <CardFooter className="flex flex-col justify-center items-start gap-4 ">
           <div className="flex flex-col justify-center items-start gap-1">
             <h1 className="font-semibold">{product.name}</h1>
-            <p className="">{product.description}</p>
+            <p className="opacity-50">{product.description}</p>
           </div>
           <div className="flex items-center gap-1">
             <IconStarFilled size={16} />
@@ -39,8 +42,8 @@ export default function ProductCard({ product } : { product: Product }) {
             </Badge>
           </div>
           <div className="w-full flex justify-between">
-            <Button >
-              <span>Add to Cart</span>
+            <Button onClick={() => isInCart ? removeItem(product.id) : addItem(product)}>
+              <span>{isInCart ? "Remove from Cart" : "Add to Cart"}</span>
             </Button>
             <Badge variant={"outline"} className="flex gap-2">
               <span>
