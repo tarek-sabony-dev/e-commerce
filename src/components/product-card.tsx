@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { IconHeart, IconHeartFilled, IconStar, IconStarFilled, IconStarHalfFilled } from "@tabler/icons-react";
