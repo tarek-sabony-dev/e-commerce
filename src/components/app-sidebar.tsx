@@ -5,7 +5,6 @@ import {
   IconBrandNextjs,
   IconChartBarPopular,
   IconHeart,
-  IconInnerShadowTop,
   IconPhone,
   IconShoppingBag,
   IconShoppingCart,

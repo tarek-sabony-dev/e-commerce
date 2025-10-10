@@ -1,13 +1,18 @@
+export interface ImageObject {
+  key: string
+  url: string
+}
+
 export interface Product {
   id: number
   name: string
   description: string
-  price: number
-  discountedPrice: number
-  images: string
+  price: number // cents
+  discountedPrice: number | null // cents
+  imageUrls: ImageObject[]
   categoryId: number
-  stoke: number
-  rating: number
-  createdAt: string
-  updatedAt: string
+  stock: number
+  rating: string
+  createdAt: Date
+  updatedAt: Date
 }

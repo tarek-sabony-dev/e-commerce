@@ -2,13 +2,12 @@ import { Product } from "./product";
 
 export interface Wishlist {
   items: WishlistItem[]
-  id: number
-  userId: number
+  totalItems: number
 }
 
 export interface WishlistItem {
   id: number
-  useId: number
+  userId: number
   productId: number
   product?: Product // Joined product data
 }

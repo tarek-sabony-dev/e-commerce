@@ -17,6 +17,7 @@ import { useCartStore } from "@/stores/cart-store"
 import Image from "next/image"
 import { Badge } from "./ui/badge"
 import { Input } from "./ui/input"
+import { formatCents } from "@/lib/utils"
 
 export function CartSheet() {
   const { items, removeItem, updateQuantity, totalPrice, totalItems } = useCartStore()
@@ -40,12 +41,17 @@ export function CartSheet() {
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
                   <Badge variant={"outline"}>
-                    <Image src={item.product?.images || ""} alt={item.product?.name || ""} width={100} height={100} />
+                    <Image
+                      src={item.product?.imageUrls?.[0]?.url ?? "/smartphone.png"}
+                      alt={item.product?.imageUrls?.[0]?.key ?? item.product?.name ?? "Product image"}
+                      width={100}
+                      height={100}
+                    />
                   </Badge>
                   <div className="flex flex-col gap-2">
                     <div>
                       <h1 className="font-semibold">{item.product?.name}</h1>
-                      <p className="opacity-50"><s>${item.product?.price}</s> | ${item.product?.discountedPrice}</p>
+                      <p className="opacity-50"><s>{formatCents(item.product?.price ?? 0)}</s> | {formatCents(item.product?.discountedPrice ?? item.product?.price ?? 0)}</p>
                     </div>
                     <Badge variant={"outline"}>
                       <Button variant={"ghost"} size={"icon"} onClick={() => updateQuantity(item.productId, item.quantity - 1)}>
@@ -66,7 +72,7 @@ export function CartSheet() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-4">
-                  <h1 className="font-semibold">${(item.product?.discountedPrice || 0) * item.quantity}</h1>
+                  <h1 className="font-semibold">{formatCents(((item.product?.discountedPrice ?? item.product?.price ?? 0) * item.quantity))}</h1>
                   <Button variant={"destructive"} onClick={() => removeItem(item.productId)}>
                     <IconTrash />
                   </Button>
