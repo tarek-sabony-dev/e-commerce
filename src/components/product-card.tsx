@@ -9,8 +9,9 @@ import { formatCents } from "@/lib/utils";
 import { Badge } from "./ui/badge";
 import { Product } from "@/types/product";
 import { useCartStore } from "@/stores/cart-store";
+import { Skeleton } from "./ui/skeleton";
 
-export default function ProductCard({ product } : { product: Product }) {
+function ProductCard({ product } : { product: Product }) {
   const { addItem, removeItem, items } = useCartStore()
   const isInCart = items.some(item => item.productId === product.id)
   const thumdnailImage = product.imageUrls?.[0]
@@ -70,3 +71,41 @@ export default function ProductCard({ product } : { product: Product }) {
     </>
   )
 }
+
+function SkeletonProductCard(){
+  return (
+    <Card className="w-full h-full rounded-2xl">
+      <CardHeader>
+        <CardAction>
+          <Button variant={"ghost"} size={"icon"}>
+            <IconHeart className="size-6" />
+          </Button>
+        </CardAction>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
+        <Separator/>
+        <Skeleton className="w-full aspect-square rounded-3xl" />
+        <Separator/>
+      </CardContent>
+      <CardFooter className="flex flex-col justify-center items-start gap-4 ">
+        <div className="w-full flex flex-col justify-center items-start gap-1">
+          <Skeleton className="w-1/2 h-4" />
+          <Skeleton className="w-[75%] h-4" />
+        </div>
+        <div className="w-full flex items-center gap-1">
+          <Skeleton className="w-1/2 h-4" />
+        </div>
+        <div className="w-full flex justify-between">
+          <Skeleton />
+          <Badge variant={"outline"} className="flex gap-2">
+            <Skeleton className="size-4" />
+            <Separator orientation="vertical" />
+            <Skeleton className="size-4" />
+          </Badge>
+        </div>
+      </CardFooter>
+    </Card>
+  )
+}
+
+export { ProductCard, SkeletonProductCard }
