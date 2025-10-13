@@ -18,9 +18,12 @@ import Image from "next/image"
 import { Badge } from "./ui/badge"
 import { Input } from "./ui/input"
 import { formatCents } from "@/lib/utils"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 export function CartSheet() {
   const { items, removeItem, updateQuantity, totalPrice, totalItems } = useCartStore()
+  const isMobile = useIsMobile()
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -28,59 +31,61 @@ export function CartSheet() {
         <IconShoppingCart className="size-6" />
       </Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent side={isMobile? "bottom" : "right"} className={isMobile? 'h-[90%] overflow-scroll' : ''}>
         <SheetHeader>
           <SheetTitle>Shopping Cart</SheetTitle>
           <SheetDescription>
             View your shopping cart and checkout.
           </SheetDescription>
         </SheetHeader>
-        {items.map((item) => (
-          <Card key={item.id}>
-            <CardContent>
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-4">
-                  <Badge variant={"outline"}>
-                    <Image
-                      src={item.product?.imageUrls?.[0]?.url ?? "/smartphone.png"}
-                      alt={item.product?.imageUrls?.[0]?.key ?? item.product?.name ?? "Product image"}
-                      width={100}
-                      height={100}
-                    />
-                  </Badge>
-                  <div className="flex flex-col gap-2">
-                    <div>
-                      <h1 className="font-semibold">{item.product?.name}</h1>
-                      <p className="opacity-50"><s>{formatCents(item.product?.price ?? 0)}</s> | {formatCents(item.product?.discountedPrice ?? item.product?.price ?? 0)}</p>
-                    </div>
+        <div className="flex flex-col gap-4 px-4 overflow-scroll">
+          {items.map((item) => (
+            <Card key={item.id} className="py-4 lg:py-6">
+              <CardContent className="px-4 lg:px-6">
+                <div className="w-full flex justify-between items-start gap-4">
+                  <div className="w-full flex flex-col lg:flex-row gap-4">
                     <Badge variant={"outline"}>
-                      <Button variant={"ghost"} size={"icon"} onClick={() => updateQuantity(item.productId, item.quantity - 1)}>
-                        <IconMinus />
-                      </Button>
-                      <Input
-                        className="text-center border-0 bg-transparent dark:bg-transparent shadow-none focus-visible:ring-0 focus-visible:border-transparent"
-                        size={2}
-                        value={item.quantity}
-                        onChange={(e) => {
-                        const next = parseInt(e.target.value, 10)
-                        updateQuantity(item.productId, Number.isNaN(next) ? 1 : next)
-                      }} />
-                      <Button variant={"ghost"} size={"icon"} onClick={() => updateQuantity(item.productId, item.quantity + 1)}>
-                        <IconPlus />
-                      </Button>
+                      <Image
+                        src={item.product?.imageUrls[0].url || '/fallback-image.png'}
+                        alt={item.product?.imageUrls[0].key || "Product image"}
+                        width={100}
+                        height={100}
+                      />
                     </Badge>
+                    <div className="w-full flex flex-col justify-between items-start gap-4">
+                      <div>
+                        <h1 className="font-semibold">{item.product?.name}</h1>
+                        <p className="opacity-50"><s>{formatCents(item.product?.price ?? 0)}</s> | {formatCents(item.product?.discountedPrice ?? item.product?.price ?? 0)}</p>
+                      </div>
+                      <Badge variant={"outline"}>
+                        <Button variant={"ghost"} size={"icon"} onClick={() => updateQuantity(item.productId, item.quantity - 1)}>
+                          <IconMinus />
+                        </Button>
+                        <Input
+                          className="text-center border-0 bg-transparent dark:bg-transparent shadow-none focus-visible:ring-0 focus-visible:border-transparent"
+                          size={2}
+                          value={item.quantity}
+                          onChange={(e) => {
+                          const next = parseInt(e.target.value, 10)
+                          updateQuantity(item.productId, Number.isNaN(next) ? 1 : next)
+                        }} />
+                        <Button variant={"ghost"} size={"icon"} onClick={() => updateQuantity(item.productId, item.quantity + 1)}>
+                          <IconPlus />
+                        </Button>
+                      </Badge>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end gap-4">
+                    <Button variant={"destructive"} size={"icon"} onClick={() => removeItem(item.productId)}>
+                      <IconTrash />
+                    </Button>
+                    <h1 className="font-semibold">{formatCents(((item.product?.discountedPrice ?? item.product?.price ?? 0) * item.quantity))}</h1>
                   </div>
                 </div>
-                <div className="flex flex-col gap-4">
-                  <h1 className="font-semibold">{formatCents(((item.product?.discountedPrice ?? item.product?.price ?? 0) * item.quantity))}</h1>
-                  <Button variant={"destructive"} onClick={() => removeItem(item.productId)}>
-                    <IconTrash />
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
         <SheetFooter>
           <div className="flex justify-between w-full">
             <p className="font-semibold">Total cost is: ${totalPrice}</p>
