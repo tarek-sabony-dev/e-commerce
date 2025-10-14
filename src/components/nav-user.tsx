@@ -22,6 +22,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import Image from "next/image"
+import { signOut } from "next-auth/react"
 
 export function NavUser({
   user,
@@ -38,7 +40,7 @@ export function NavUser({
       <DropdownMenuTrigger asChild>
         <div className="flex items-center gap-2 py-2">
           <Avatar className="h-8 w-8 rounded-lg grayscale">
-            <AvatarImage src={user.avatar} alt={user.name} />
+            <Image width={56} height={56} src={user.avatar || '/gloves.png'} alt="asd" />
             <AvatarFallback className="rounded-lg">CN</AvatarFallback>
           </Avatar>
           <div className="grid flex-1 text-left text-sm leading-tight">
@@ -86,9 +88,12 @@ export function NavUser({
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <IconLogout />
-          Log out
+        <DropdownMenuItem onClick={() => signOut()}>
+          
+
+            <IconLogout />
+            Log out
+          
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

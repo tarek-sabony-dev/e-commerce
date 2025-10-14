@@ -21,6 +21,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { useSession } from "next-auth/react"
 
 const data = {
   navMain: [
@@ -54,10 +55,12 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   // fetch user data
+  const session = useSession()
+  console.log(session.data?.user.email)
   const user = {
-    name: "",
-    email: "",
-    avatar: ""
+    name: session.data?.user.name || '',
+    email: session.data?.user.email || '',
+    avatar: session.data?.user.image || ''
   }
 
   return (

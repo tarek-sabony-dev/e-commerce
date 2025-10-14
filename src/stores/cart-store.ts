@@ -8,15 +8,17 @@ interface CartStore extends Cart {
   updateQuantity: (productId: number, quantity: number) => void
   clearCart: () => void
   calculateTotals: () => void
+  setUserId: (userId: string | null) => void
 }
 
 export const useCartStore = create<CartStore>()((set, get) => ({
   items: [],
   totalItems: 0,
   totalPrice: 0,
+  userId: null,
 
   addItem: (product: Product, quantity = 1) => {
-    const { items } = get()
+    const { items, userId } = get()
     const existingItem = items.find(item => item.productId === product.id)
     
     if (existingItem) {
@@ -30,7 +32,7 @@ export const useCartStore = create<CartStore>()((set, get) => ({
     } else {
       const newItem: CartItem = {
         id: Date.now(), // Simple ID generation
-        userId: 1, // You might want to get this from auth context
+        userId: userId, // Use the current user ID
         productId: product.id,
         quantity,
         product
@@ -81,5 +83,9 @@ export const useCartStore = create<CartStore>()((set, get) => ({
     }, 0)
     
     set({ totalItems, totalPrice })
+  },
+
+  setUserId: (userId: string | null) => {
+    set({ userId })
   }
 }))

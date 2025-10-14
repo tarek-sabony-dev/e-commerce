@@ -1,7 +1,7 @@
 'use server'
 
 import { db } from "@/db/db"
-import { cartItems, categories, products, users, wishlist } from "@/db/schema"
+import { categories, products } from "@/db/schema"
 
 export async function GetCategories() {
   try {
