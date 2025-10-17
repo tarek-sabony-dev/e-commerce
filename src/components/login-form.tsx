@@ -25,9 +25,23 @@ export function LoginForm() {
     },
   })
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    console.log(data)
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    const result = await signIn('credentials', {
+      redirect: false,
+      email: data.email,
+      password: data.password,
+      callbackUrl: '/'
+    })
+
+    if (result?.error) {
+      form.setError('email', { message: 'Invalid email or password' })
+      form.setError('password', { message: 'Invalid email or password' })
+      return
+    }
+
+    if (result?.ok) {
+      window.location.href = result.url ?? '/'
+    }
   }
 
   return (
@@ -93,7 +107,7 @@ export function LoginForm() {
           <Button
             variant="outline"
             className="w-full"
-            onClick={() => signIn('google')}
+            onClick={() => signIn('google', { callbackUrl: '/' })}
           >
             <IconBrandGoogleFilled />
             Login with Google

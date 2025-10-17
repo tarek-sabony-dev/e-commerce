@@ -14,6 +14,8 @@ export const authOptions: NextAuthOptions = {
     sessionsTable: sessions,
     verificationTokensTable: verificationTokens,
   }),
+  // Ensure secrets and host are trusted for OAuth callbacks
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -49,6 +51,10 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      // Extend HTTP timeout to avoid callback timeouts in slower networks
+      httpOptions: {
+        timeout: 10000,
+      },
     }),
   ],
   callbacks: {
