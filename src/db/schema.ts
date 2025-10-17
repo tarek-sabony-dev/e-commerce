@@ -49,6 +49,7 @@ export const users = pgTable('users', {
   emailVerified: timestamp('email_verified', { withTimezone: true }),
   image: varchar('image', { length: 255 }),
   username: varchar('username', { length: 255 }),
+  passwordHash: varchar('password_hash', { length: 255 }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
@@ -82,18 +83,18 @@ export const products = pgTable('products', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
-// // cart_items
-// export const cartItems = pgTable('cart_items', {
-//   id: serial('id').primaryKey(),
-//   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-//   productId: integer('product_id').notNull().references(() => products.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-//   quantity: integer('quantity').notNull(),
-//   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-// });
+// cart_items
+export const cartItems = pgTable('cart_items', {
+  id: serial('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+  productId: integer('product_id').notNull().references(() => products.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+  quantity: integer('quantity').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
 
-// // wishlist
-// export const wishlist = pgTable('wishlist', {
-//   id: serial('id').primaryKey(),
-//   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-//   productId: integer('product_id').notNull().references(() => products.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-// });
+// wishlist
+export const wishlist = pgTable('wishlist', {
+  id: serial('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+  productId: integer('product_id').notNull().references(() => products.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+});

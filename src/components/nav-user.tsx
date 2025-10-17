@@ -1,10 +1,10 @@
 "use client"
 
 import {
-  IconCreditCard,
   IconDotsVertical,
+  IconLogin,
   IconLogout,
-  IconNotification,
+  IconSettings,
   IconUserCircle,
 } from "@tabler/icons-react"
 
@@ -22,34 +22,102 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import Image from "next/image"
-import { signOut } from "next-auth/react"
+import { signIn, signOut, useSession } from "next-auth/react"
+import { Skeleton } from "./ui/skeleton"
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string
-    email: string
-    avatar: string
+export function NavUser() {
+  // fetch user data
+  const { data: session, status } = useSession()
+  const user = session?.user
+
+  if (status === "loading") {
+    return (
+      <div className="w-full h-14 flex justify-between items-center gap-2">
+        <div className="w-fit h-fit">
+          <Skeleton className="w-8 h-8 rounded-lg " />
+        </div>
+        <div className="w-full h-fit flex flex-col gap-2">
+          <Skeleton className="w-1/2 h-3" />
+          <Skeleton className="w-2/3 h-3" />
+        </div>
+      </div>
+    )
   }
-}) {
+
+  if (user) {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <div className="flex items-center gap-2 py-2">
+            <Avatar className="h-8 w-8 rounded-lg grayscale">
+              <AvatarImage src={user.image || ''} alt={user.name || 'user profile picture'} />
+              <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+            </Avatar>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-medium">{user.name}</span>
+              <span className="text-muted-foreground truncate text-xs">
+                {user.email}
+              </span>
+            </div>
+            <IconDotsVertical className="ml-auto size-5" />
+          </div>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+          side={"bottom"}
+          align="end"
+          sideOffset={4}
+        >
+          <DropdownMenuLabel className="p-0 font-normal">
+            <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+              <Avatar className="h-8 w-8 rounded-lg">
+                <AvatarImage src={user?.image || ''} alt={user?.name || 'user profile picture'} />
+                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+              </Avatar>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-medium">{user?.name || "Geist account"}</span>
+                <span className="text-muted-foreground truncate text-xs">
+                  {user?.email}
+                </span>
+              </div>
+            </div>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem>
+              <IconUserCircle />
+              Account
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <IconSettings />
+              Settings
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => signOut()}>
+            <IconLogout />
+            Log out
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+  }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div className="flex items-center gap-2 py-2">
           <Avatar className="h-8 w-8 rounded-lg grayscale">
-            <Image width={56} height={56} src={user.avatar || '/gloves.png'} alt="asd" />
+            <AvatarImage src={'/placeholder.png'} alt={'user profile picture'} />
             <AvatarFallback className="rounded-lg">CN</AvatarFallback>
           </Avatar>
           <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-medium">{user.name}</span>
+            <span className="truncate font-medium">{"Geist account"}</span>
             <span className="text-muted-foreground truncate text-xs">
-              {user.email}
+              
             </span>
           </div>
-          <IconDotsVertical className="ml-auto size-4" />
+          <IconDotsVertical className="ml-auto size-5" />
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -61,13 +129,13 @@ export function NavUser({
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
             <Avatar className="h-8 w-8 rounded-lg">
-              <AvatarImage src={user.avatar} alt={user.name} />
+              <AvatarImage src={'/placeholder.png'} alt={'user profile picture'} />
               <AvatarFallback className="rounded-lg">CN</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">{user.name}</span>
+              <span className="truncate font-medium">{"Geist account"}</span>
               <span className="text-muted-foreground truncate text-xs">
-                {user.email}
+                
               </span>
             </div>
           </div>
@@ -79,21 +147,14 @@ export function NavUser({
             Account
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <IconCreditCard />
-            Billing
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <IconNotification />
-            Notifications
+            <IconSettings />
+            Settings
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => signOut()}>
-          
-
-            <IconLogout />
-            Log out
-          
+        <DropdownMenuItem onClick={() => signIn()}>
+          <IconLogin />
+          Sign in
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
