@@ -10,11 +10,15 @@ import { Badge } from "./ui/badge";
 import { Product } from "@/types/product";
 import { useCartStore } from "@/stores/cart-store";
 import { Skeleton } from "./ui/skeleton";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 function ProductCard({ product } : { product: Product }) {
   const { addItem, removeItem, items } = useCartStore()
+  const { data: session, status } = useSession()
   const isInCart = items.some(item => item.productId === product.id)
   const thumdnailImage = product.imageUrls?.[0]
+  const isAuthenticated = status === 'authenticated' && session?.user
 
   return (
     <>
@@ -53,9 +57,17 @@ function ProductCard({ product } : { product: Product }) {
             </Badge>
           </div>
           <div className="w-full flex justify-between">
-            <Button onClick={() => isInCart ? removeItem(product.id) : addItem(product)}>
-              <span>{isInCart ? "Remove from Cart" : "Add to Cart"}</span>
-            </Button>
+            {isAuthenticated ? (
+              <Button onClick={() => isInCart ? removeItem(product.id) : addItem(product)}>
+                <span>{isInCart ? "Remove from Cart" : "Add to Cart"}</span>
+              </Button>
+            ) : (
+              <Link href="/auth/signin">
+                <Button>
+                  <span>Add to Cart</span>
+                </Button>
+              </Link>
+            )}
             <Badge variant={"outline"} className="flex gap-2">
               <span>
                 <s>{formatCents(product.price)}</s>
