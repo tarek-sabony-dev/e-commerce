@@ -27,8 +27,8 @@ import { AlertCircleIcon } from "lucide-react"
 export function CartSheet() {
   const { items, removeItem, updateQuantity, totalPrice, totalItems, error } = useCartStore()
   const { data: session, status } = useSession()
-  const isMobile = useIsMobile()
   const isAuthenticated = status === 'authenticated' && session?.user
+  const isMobile = useIsMobile()
 
   return (
     <Sheet>

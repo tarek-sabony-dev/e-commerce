@@ -35,8 +35,8 @@ const data = {
       icon: IconShoppingBag,
     },
     {
-      title: "Whishlist",
-      url: "/whishlist",
+      title: "Wishlist",
+      url: "/wishlist",
       icon: IconHeart,
     },
     {

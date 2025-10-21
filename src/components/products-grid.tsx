@@ -7,8 +7,7 @@ import { Product } from "@/types/product"
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert"
 import { IconAlertCircle, IconReload } from "@tabler/icons-react"
 import { Button } from "./ui/button"
-
-type LoadingState = 'idle' | 'loading' | 'success' | 'failed'
+import { LoadingState } from "@/types/general-types"
 
 export default function ProductGrid(){
   const [products, setProducts] = useState<Product[]>([])
