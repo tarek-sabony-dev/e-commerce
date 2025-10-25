@@ -68,9 +68,7 @@ function SkeletonCartItemCard() {
       <CardContent className="px-4 lg:px-6">
         <div className="w-full flex justify-between items-start gap-4">
           <div className="w-full flex flex-col lg:flex-row gap-4">
-            <Badge variant={"outline"}>
-              <Skeleton className="w-[100px] h-[100px] " />
-            </Badge>
+            <Skeleton className="w-[100px] h-[100px] " />
             <div className="w-full flex flex-col justify-center items-start gap-4">
               <div className="flex flex-col gap-2">
                 <Skeleton className="w-[120px] h-3 " />

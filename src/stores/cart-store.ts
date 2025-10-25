@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { Cart, CartItem } from '@/types/cart'
+import { CartItem } from '@/types/cart'
 import { Product } from '@/types/product'
 import { 
   getUserCartItems, 
@@ -9,20 +9,35 @@ import {
   clearUserCart 
 } from '@/app/actions/actions'
 
-interface CartStore extends Cart {
+interface CartStore {
+  // state
+  items: CartItem[]
+  totalItems: number
+  totalPrice: number
+  userId: string | null
   isLoading: boolean
   error: string | null
+
+  // crud actions
   addItem: (product: Product, quantity?: number) => void
   removeItem: (productId: number) => void
   updateQuantity: (productId: number, quantity: number) => void
   clearCart: () => void
+
+  // computing functions
   calculateTotals: () => void
-  setUserId: (userId: string | null) => void
+
+  // data syncing actions
   loadCart: (userId: string) => Promise<void>
+  setUserId: (userId: string | null) => void
+
+  // loading and error states
   setError: (error: string | null) => void
+  setLoading: (loading: boolean) => void
 }
 
 export const useCartStore = create<CartStore>()((set, get) => ({
+  // initial state
   items: [],
   totalItems: 0,
   totalPrice: 0,
@@ -32,6 +47,7 @@ export const useCartStore = create<CartStore>()((set, get) => ({
 
   loadCart: async (userId: string) => {
     set({ isLoading: true, error: null })
+    
     try {
       const cartItems = await getUserCartItems(userId)
       const items: CartItem[] = cartItems.map(item => ({
@@ -185,7 +201,7 @@ export const useCartStore = create<CartStore>()((set, get) => ({
     }
   },
 
-  setError: (error: string | null) => {
-    set({ error })
-  }
+  setLoading: (loading: boolean) => set({ isLoading: loading }),
+  
+  setError: (error: string | null) => set({ error })
 }))

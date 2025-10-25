@@ -2,7 +2,9 @@
 
 import { db } from "@/db/db"
 import { categories, products, cartItems } from "@/db/schema"
+import { authOptions } from "@/lib/auth"
 import { eq, and } from "drizzle-orm"
+import { getServerSession } from "next-auth"
 
 export async function GetCategories() {
   try {
@@ -25,6 +27,20 @@ export async function GetProducts() {
 }
 
 export async function getUserCartItems(userId: string) {
+  const session = await getServerSession(authOptions)
+
+  // reject if no valid session
+  if (!session?.user.id) {
+    console.error('expired user sesstion')
+    throw new Error('Unauthorized')
+  }
+
+  // reject mismatched userId to prevent tampering
+  if (userId !== session.user.id) {
+    console.error('User id mismatch between session and provided userId')
+    throw new Error('Unauthorized')
+  }
+  
   try {
     const result = await db.select({
         id: cartItems.id,
@@ -48,7 +64,7 @@ export async function getUserCartItems(userId: string) {
       })
       .from(cartItems)
       .leftJoin(products, eq(cartItems.productId, products.id))
-      .where(eq(cartItems.userId, userId))
+      .where(eq(cartItems.userId, session.user.id))
     
     return result
   } catch (error) {
@@ -58,14 +74,28 @@ export async function getUserCartItems(userId: string) {
 }
 
 export async function addCartItem(userId: string, productId: number, quantity: number) {
+  const session = await getServerSession(authOptions)
+  
+  // reject if no valid session
+  if (!session?.user.id) {
+    console.error('expired user sesstion')
+    throw new Error('Unauthorized')
+  }
+
+  // reject mismatched userId to prevent tampering
+  if (userId !== session.user.id) {
+    console.error('User id mismatch between session and provided userId')
+    throw new Error('Unauthorized')
+  }
+  
   try {
     await db.insert(cartItems).values({
-      userId,
+      userId: session.user.id,
       productId,
       quantity
     })
-    
     return { success: true }
+    
   } catch (error) {
     console.error('Error adding cart item:', error)
     throw error
@@ -73,10 +103,24 @@ export async function addCartItem(userId: string, productId: number, quantity: n
 }
 
 export async function removeCartItem(userId: string, productId: number) {
+  const session = await getServerSession(authOptions)
+
+  // reject if no valid session
+  if (!session?.user.id) {
+    console.error('expired user sesstion')
+    throw new Error('Unauthorized')
+  }
+
+  // reject mismatched userId to prevent tampering
+  if (userId !== session.user.id) {
+    console.error('User id mismatch between session and provided userId')
+    throw new Error('Unauthorized')
+  }
+
   try {
     await db
       .delete(cartItems)
-      .where(and(eq(cartItems.userId, userId), eq(cartItems.productId, productId)))
+      .where(and(eq(cartItems.userId, session.user.id), eq(cartItems.productId, productId)))
     
     return { success: true }
   } catch (error) {
@@ -86,11 +130,25 @@ export async function removeCartItem(userId: string, productId: number) {
 }
 
 export async function updateCartItemQuantity(userId: string, productId: number, quantity: number) {
+  const session = await getServerSession(authOptions)
+
+  // reject if no valid session
+  if (!session?.user.id) {
+    console.error('expired user sesstion')
+    throw new Error('Unauthorized')
+  }
+
+  // reject mismatched userId to prevent tampering
+  if (userId !== session.user.id) {
+    console.error('User id mismatch between session and provided userId')
+    throw new Error('Unauthorized')
+  }
+
   try {
     await db
-      .update(cartItems)
-      .set({ quantity })
-      .where(and(eq(cartItems.userId, userId), eq(cartItems.productId, productId)))
+    .update(cartItems)
+    .set({ quantity })
+    .where(and(eq(cartItems.userId, session.user.id), eq(cartItems.productId, productId)))
     
     return { success: true }
   } catch (error) {
@@ -100,10 +158,24 @@ export async function updateCartItemQuantity(userId: string, productId: number, 
 }
 
 export async function clearUserCart(userId: string) {
+  const session = await getServerSession(authOptions)
+
+  // reject if no valid session
+  if (!session?.user.id) {
+    console.error('expired user sesstion')
+    throw new Error('Unauthorized')
+  }
+
+  // reject mismatched userId to prevent tampering
+  if (userId !== session.user.id) {
+    console.error('User id mismatch between session and provided userId')
+    throw new Error('Unauthorized')
+  }
+  
   try {
     await db
-      .delete(cartItems)
-      .where(eq(cartItems.userId, userId))
+    .delete(cartItems)
+    .where(eq(cartItems.userId, session.user.id))
     
     return { success: true }
   } catch (error) {
