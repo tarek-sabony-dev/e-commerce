@@ -2,21 +2,24 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { IconHeart, IconStar, IconStarFilled, IconStarHalfFilled } from "@tabler/icons-react";
+import { IconHeart, IconHeartFilled, IconStar, IconStarFilled, IconStarHalfFilled } from "@tabler/icons-react";
 import Image from "next/image";
-import { Separator } from "./ui/separator";
+import { Separator } from "../ui/separator";
 import { formatCents } from "@/lib/utils";
-import { Badge } from "./ui/badge";
+import { Badge } from "../ui/badge";
 import { Product } from "@/types/product";
 import { useCartStore } from "@/stores/cart-store";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "../ui/skeleton";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useWishlistStore } from "@/stores/wishlist-store";
 
 function ProductCard({ product } : { product: Product }) {
-  const { addItem, removeItem, items } = useCartStore()
+  const { addCartItem, removeCartItem, cartItems } = useCartStore()
+  const { addWishlistItem, removeWishlistItem, wishlistItems } = useWishlistStore()
   const { data: session, status } = useSession()
-  const isInCart = items.some(item => item.productId === product.id)
+  const isInCart = cartItems.some(item => item.productId === product.id)
+  const isInWishlist = wishlistItems.some(item => item.productId === product.id)
   const thumdnailImage = product.imageUrls?.[0]
   const isAuthenticated = status === 'authenticated' && session?.user
 
@@ -25,8 +28,13 @@ function ProductCard({ product } : { product: Product }) {
       <Card className="w-full h-full rounded-2xl">
         <CardHeader>
           <CardAction>
-            <Button variant={"ghost"} size={"icon"}>
-              <IconHeart className="size-6" />
+            <Button variant={"ghost"} size={"icon"} onClick={() => isInWishlist ? removeWishlistItem(product.id) : addWishlistItem(product)}>
+              {!isInWishlist ? (
+                <IconHeart className="size-6" />
+              ) : (
+                <IconHeartFilled className="size-6" />
+              )
+              }
             </Button>
           </CardAction>
         </CardHeader>
@@ -58,7 +66,7 @@ function ProductCard({ product } : { product: Product }) {
           </div>
           <div className="w-full flex justify-between">
             {isAuthenticated ? (
-              <Button onClick={() => isInCart ? removeItem(product.id) : addItem(product)}>
+              <Button onClick={() => isInCart ? removeCartItem(product.id) : addCartItem(product)}>
                 <span>{isInCart ? "Remove from Cart" : "Add to Cart"}</span>
               </Button>
             ) : (

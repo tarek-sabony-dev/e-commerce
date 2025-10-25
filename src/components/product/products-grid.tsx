@@ -4,9 +4,9 @@ import { GetProducts } from "@/app/actions/actions"
 import { ProductCard, SkeletonProductCard } from "./product-card"
 import { useEffect, useState } from "react"
 import { Product } from "@/types/product"
-import { Alert, AlertDescription, AlertTitle } from "./ui/alert"
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
 import { IconAlertCircle, IconReload } from "@tabler/icons-react"
-import { Button } from "./ui/button"
+import { Button } from "../ui/button"
 import { LoadingState } from "@/types/general-types"
 
 export default function ProductGrid(){

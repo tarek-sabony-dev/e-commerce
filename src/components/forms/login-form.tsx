@@ -6,7 +6,7 @@ import { signIn } from "next-auth/react"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldSeparator } from "./ui/field"
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldSeparator } from "../ui/field"
 import { IconBrandGoogleFilled } from "@tabler/icons-react"
 import Link from "next/link"
 

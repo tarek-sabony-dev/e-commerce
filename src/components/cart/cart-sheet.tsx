@@ -16,12 +16,12 @@ import { useCartStore } from "@/stores/cart-store"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
-import { Alert, AlertDescription, AlertTitle } from "./ui/alert"
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
 import { AlertCircleIcon } from "lucide-react"
 import { CartItemCard, SkeletonCartItemCard } from "./cart-item-card"
 
 export function CartSheet() {
-  const { items, totalPrice, totalItems, error, isLoading } = useCartStore()
+  const { cartItems, totalPrice, totalItems, error, isLoading } = useCartStore()
   const { data: session, status } = useSession()
   const isAuthenticated = status === 'authenticated' && session?.user
   const isMobile = useIsMobile()
@@ -76,12 +76,12 @@ export function CartSheet() {
                   </AlertDescription>
                 </Alert>
               )}
-              {items.length === 0 ? (
+              {cartItems.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
                   Your cart is empty
                 </div>
               ) : (
-                items.map((item) => (
+                cartItems.map((item) => (
                   <CartItemCard key={item.id} item={item} />
                 ))
               )}
@@ -91,7 +91,7 @@ export function CartSheet() {
                 <p className="font-semibold">Total cost is: ${totalPrice}</p>
                 <p className="font-semibold">For {totalItems} items</p>
               </div>
-              <Button type="submit" disabled={items.length === 0}>Checkout</Button>
+              <Button type="submit" disabled={cartItems.length === 0}>Checkout</Button>
               <SheetClose asChild>
                 <Button variant="outline">Continue Shopping</Button>
               </SheetClose>

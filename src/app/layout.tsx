@@ -1,12 +1,13 @@
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { SiteHeader } from "@/components/site-header";
+import { SiteHeader } from "@/components/nav/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar } from "@/components/nav/app-sidebar";
 import { AuthSessionProvider } from '@/components/providers/session-provider';
-import { CartInitializer } from '@/components/cart-initializer';
+import { CartInitializer } from '@/components/cart/cart-initializer';
+import { WishlistInitializer } from "@/components/wishlist/wishlist-initializer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +34,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} >
         <AuthSessionProvider>
           <CartInitializer />
+          <WishlistInitializer />
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             <SidebarProvider
               style={

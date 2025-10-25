@@ -54,11 +54,6 @@ export const users = pgTable('users', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
-
-
-
-
-
 // categories
 export const categories = pgTable('categories', {
   id: serial('id').primaryKey(),
@@ -97,4 +92,5 @@ export const wishlist = pgTable('wishlist', {
   id: serial('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
   productId: integer('product_id').notNull().references(() => products.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });

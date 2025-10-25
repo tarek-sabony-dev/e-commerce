@@ -1,9 +1,9 @@
 import { IconSearch } from "@tabler/icons-react"
-import { Button } from "./ui/button"
-import { Input } from "./ui/input"
-import { Separator } from "./ui/separator"
-import { SidebarTrigger } from "./ui/sidebar"
-import { CartSheet } from "./cart-sheet"
+import { SidebarTrigger } from "../ui/sidebar"
+import { Separator } from "@radix-ui/react-separator"
+import { Input } from "../ui/input"
+import { Button } from "../ui/button"
+import { CartSheet } from "../cart/cart-sheet"
 
 export function SiteHeader() {
   return (

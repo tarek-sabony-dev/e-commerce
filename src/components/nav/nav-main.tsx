@@ -9,7 +9,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { Separator } from "./ui/separator"
+import { Separator } from "../ui/separator"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 

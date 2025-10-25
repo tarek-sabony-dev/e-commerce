@@ -10,8 +10,8 @@ import {
   IconShoppingCart,
 } from "@tabler/icons-react"
 
-import { NavMain } from "@/components/nav-main"
-import { NavUser } from "@/components/nav-user"
+import { NavMain } from "@/components/nav/nav-main"
+import { NavUser } from "@/components/nav/nav-user"
 import {
   Sidebar,
   SidebarContent,

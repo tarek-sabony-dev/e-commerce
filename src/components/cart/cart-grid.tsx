@@ -3,13 +3,13 @@
 import { useCartStore } from "@/stores/cart-store"
 import { useSession } from "next-auth/react"
 import { CartItemCard, SkeletonCartItemCard } from "./cart-item-card"
-import { Alert, AlertDescription, AlertTitle } from "./ui/alert"
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
 import { IconAlertCircle, IconReload } from "@tabler/icons-react"
-import { Button } from "./ui/button"
+import { Button } from "../ui/button"
 import Link from "next/link"
 
 export default function CartGrid() {
-  const { items, error, isLoading } = useCartStore()
+  const { cartItems, error, isLoading } = useCartStore()
   const { data: session, status } = useSession()
   const isAuthenticated = status === 'authenticated' && session?.user
 
@@ -61,7 +61,7 @@ export default function CartGrid() {
       ) : (
         <>
           <div className="flex flex-col gap-4 px-4 overflow-scroll">
-            {items.map((item) => (
+            {cartItems.map((item) => (
               <CartItemCard key={item.id} item={item} />
             ))}
           </div>

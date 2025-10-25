@@ -7,11 +7,11 @@ import {
   removeCartItem, 
   updateCartItemQuantity, 
   clearUserCart 
-} from '@/app/actions/actions'
+} from '@/app/actions/cart-actions'
 
 interface CartStore {
   // state
-  items: CartItem[]
+  cartItems: CartItem[]
   totalItems: number
   totalPrice: number
   userId: string | null
@@ -19,8 +19,8 @@ interface CartStore {
   error: string | null
 
   // crud actions
-  addItem: (product: Product, quantity?: number) => void
-  removeItem: (productId: number) => void
+  addCartItem: (product: Product, quantity?: number) => void
+  removeCartItem: (productId: number) => void
   updateQuantity: (productId: number, quantity: number) => void
   clearCart: () => void
 
@@ -38,7 +38,7 @@ interface CartStore {
 
 export const useCartStore = create<CartStore>()((set, get) => ({
   // initial state
-  items: [],
+  cartItems: [],
   totalItems: 0,
   totalPrice: 0,
   userId: null,
@@ -49,8 +49,8 @@ export const useCartStore = create<CartStore>()((set, get) => ({
     set({ isLoading: true, error: null })
     
     try {
-      const cartItems = await getUserCartItems(userId)
-      const items: CartItem[] = cartItems.map(item => ({
+      const items = await getUserCartItems(userId)
+      const cartItems: CartItem[] = items.map(item => ({
         id: item.id,
         userId: item.userId,
         productId: item.productId,
@@ -58,7 +58,7 @@ export const useCartStore = create<CartStore>()((set, get) => ({
         product: item.product || undefined
       }))
 
-      set({ items, isLoading: false })
+      set({ cartItems, isLoading: false })
       get().calculateTotals()
     } catch (error) {
       set({ 
@@ -69,9 +69,9 @@ export const useCartStore = create<CartStore>()((set, get) => ({
     }
   },
 
-  addItem: (product: Product, quantity = 1) => {
-    const { items, userId } = get()
-    const previousItems = [...items]
+  addCartItem: (product: Product, quantity = 1) => {
+    const { cartItems, userId } = get()
+    const previousItems = [...cartItems]
     
     if (!userId) {
       set({ error: 'You must be logged in to add items to cart' })
@@ -85,7 +85,7 @@ export const useCartStore = create<CartStore>()((set, get) => ({
       quantity,
       product
     }
-    set({ items: [...items, newItem] })
+    set({ cartItems: [...cartItems, newItem] })
     
     // Recalculate totals
     get().calculateTotals()
@@ -94,13 +94,13 @@ export const useCartStore = create<CartStore>()((set, get) => ({
     addCartItem(userId, product.id, quantity).catch((error) => {
       console.error('Error syncing to database:', error)
       // Revert on error
-      set({ items: previousItems })
+      set({ cartItems: previousItems })
       set({ error: 'Failed to add item to cart' })
       get().calculateTotals()
     })
   },
 
-  removeItem: (productId: number) => {
+  removeCartItem: (productId: number) => {
     const { userId } = get()
     
     if (!userId) {
@@ -108,9 +108,9 @@ export const useCartStore = create<CartStore>()((set, get) => ({
       return
     }
 
-    const previousItems = [...get().items]
+    const previousItems = [...get().cartItems]
     set(state => ({
-      items: state.items.filter(item => item.productId !== productId)
+      cartItems: state.cartItems.filter(item => item.productId !== productId)
     }))
     
     // Recalculate totals
@@ -120,7 +120,7 @@ export const useCartStore = create<CartStore>()((set, get) => ({
     removeCartItem(userId, productId).catch((error) => {
       console.error('Error syncing to database:', error)
       // Revert on error
-      set({ items: previousItems })
+      set({ cartItems: previousItems })
       set({ error: 'Failed to remove item from cart' })
       get().calculateTotals()
     })
@@ -139,9 +139,9 @@ export const useCartStore = create<CartStore>()((set, get) => ({
       return
     }
     
-    const previousItems = [...get().items]
+    const previousItems = [...get().cartItems]
     set(state => ({
-      items: state.items.map(item =>
+      cartItems: state.cartItems.map(item =>
         item.productId === productId
           ? { ...item, quantity }
           : item
@@ -155,7 +155,7 @@ export const useCartStore = create<CartStore>()((set, get) => ({
     updateCartItemQuantity(userId, productId, quantity).catch((error) => {
       console.error('Error syncing to database:', error)
       // Revert on error
-      set({ items: previousItems })
+      set({ cartItems: previousItems })
       set({ error: 'Failed to update item quantity' })
       get().calculateTotals()
     })
@@ -169,23 +169,23 @@ export const useCartStore = create<CartStore>()((set, get) => ({
       return
     }
 
-    const previousItems = [...get().items]
-    set({ items: [], totalItems: 0, totalPrice: 0 })
+    const previousItems = [...get().cartItems]
+    set({ cartItems: [], totalItems: 0, totalPrice: 0 })
     
     // Sync to database (optimistic update)
     clearUserCart(userId).catch((error) => {
       console.error('Error syncing to database:', error)
       // Revert on error
-      set({ items: previousItems })
+      set({ cartItems: previousItems })
       set({ error: 'Failed to clear cart' })
       get().calculateTotals()
     })
   },
 
   calculateTotals: () => {
-    const { items } = get()
-    const totalItems = items.reduce((sum, item) => sum + item.quantity, 0)
-    const totalPrice = items.reduce((sum, item) => {
+    const { cartItems } = get()
+    const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0)
+    const totalPrice = cartItems.reduce((sum, item) => {
       const priceCents = item.product?.discountedPrice ?? item.product?.price ?? 0
       return sum + (priceCents * item.quantity)
     }, 0)
@@ -197,7 +197,7 @@ export const useCartStore = create<CartStore>()((set, get) => ({
     set({ userId })
     if (!userId) {
       // Clear cart when user logs out
-      set({ items: [], totalItems: 0, totalPrice: 0, error: null })
+      set({ cartItems: [], totalItems: 0, totalPrice: 0, error: null })
     }
   },
 

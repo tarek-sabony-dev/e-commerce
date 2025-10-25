@@ -1,4 +1,4 @@
-import CartGrid from "@/components/cart-grid";
+import CartGrid from "@/components/cart/cart-grid";
 
 export default function CartPage() {
   return (

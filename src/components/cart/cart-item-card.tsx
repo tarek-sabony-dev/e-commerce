@@ -1,18 +1,18 @@
 'use client'
 
 import { CartItem } from "@/types/cart";
-import { Card, CardContent } from "./ui/card";
-import { Badge } from "./ui/badge";
+import { Card, CardContent } from "../ui/card";
+import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { formatCents } from "@/lib/utils";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { IconMinus, IconPlus, IconTrash } from "@tabler/icons-react";
-import { Input } from "./ui/input";
+import { Input } from "../ui/input";
 import { useCartStore } from "@/stores/cart-store";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "../ui/skeleton";
 
 function CartItemCard({ item } : { item: CartItem }) {
-  const { removeItem, updateQuantity } = useCartStore()
+  const { removeCartItem, updateQuantity } = useCartStore()
 
   return (
     <Card className="py-4 lg:py-6">
@@ -51,7 +51,7 @@ function CartItemCard({ item } : { item: CartItem }) {
             </div>
           </div>
           <div className="flex flex-col items-end gap-4">
-            <Button variant={"destructive"} size={"icon"} onClick={() => removeItem(item.productId)}>
+            <Button variant={"destructive"} size={"icon"} onClick={() => removeCartItem(item.productId)}>
               <IconTrash />
             </Button>
             <h1 className="font-semibold">{formatCents(((item.product?.discountedPrice ?? item.product?.price ?? 0) * item.quantity))}</h1>
