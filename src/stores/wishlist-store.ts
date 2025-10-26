@@ -1,4 +1,4 @@
-import { addWishlistItem, getUserWishlistItems, removeWishlistItem } from "@/app/actions/wishlist-actions"
+import { addWishlistItem, clearUserWishlist, getUserWishlistItems, removeWishlistItem } from "@/app/actions/wishlist-actions"
 import { Product } from "@/types/product"
 import { WishlistItem } from "@/types/whishlist"
 import { create } from "zustand"
@@ -52,10 +52,10 @@ export const useWishlistStore = create<WishlistStore>()((set, get) => ({
       get().calculateTotals()
     } catch (error) {
       set({ 
-        error: 'Failed to load cart items', 
+        error: 'Failed to load wishlist items', 
         isLoading: false 
       })
-      console.error('Error loading cart:', error)
+      console.error('Error loading wishlist:', error)
     }
   },
 
@@ -64,7 +64,7 @@ export const useWishlistStore = create<WishlistStore>()((set, get) => ({
     const previousItems = [...wishlistItems]
 
     if (!userId) {
-      set({ error: 'You must be logged in to add items to cart' })
+      set({ error: 'You must be logged in to add items to wishlist' })
       return
     }
     
@@ -92,7 +92,7 @@ export const useWishlistStore = create<WishlistStore>()((set, get) => ({
     const { userId } = get()
 
     if (!userId) {
-      set({ error: 'You must be logged in to remove items from cart' })
+      set({ error: 'You must be logged in to remove items from wishlist' })
       return
     }
 
@@ -113,7 +113,25 @@ export const useWishlistStore = create<WishlistStore>()((set, get) => ({
     })
   },
 
-  clearWishlist: () => {},
+  clearWishlist: () => {
+    const { userId } = get()
+
+    if (!userId) {
+      set({ error: 'You must be logged in to clear wishlist' })
+      return
+    }
+    const previousItems = [...get().wishlistItems]
+    set({ wishlistItems: [], totalItems: 0 })
+
+    // Sync to database (optimistic update)
+    clearUserWishlist(userId).catch(error => {
+      console.error('Error syncing to database:', error)
+      // Revert state on failure
+      set({ wishlistItems: previousItems })
+      set({ error: 'Failed to clear wishlist' })
+      get().calculateTotals()
+    })
+  },
 
   calculateTotals: () => {
     const items = get().wishlistItems

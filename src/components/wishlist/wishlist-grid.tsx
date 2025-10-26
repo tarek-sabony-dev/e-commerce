@@ -1,15 +1,15 @@
 'use client'
 
-import { useCartStore } from "@/stores/cart-store"
+import { useWishlistStore } from "@/stores/wishlist-store"
 import { useSession } from "next-auth/react"
-import { CartItemCard, SkeletonCartItemCard } from "./cart-item-card"
+import Link from "next/link"
+import { Button } from "../ui/button"
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
 import { IconAlertCircle, IconReload } from "@tabler/icons-react"
-import { Button } from "../ui/button"
-import Link from "next/link"
+import { SkeletonWishlistItemCard, WishlistItemCard } from "./wishlist-item-card"
 
-export default function CartGrid() {
-  const { cartItems, error, isLoading } = useCartStore()
+export default function WishlistGrid() {
+  const { wishlistItems, error, isLoading } = useWishlistStore()
   const { data: session, status } = useSession()
   const isAuthenticated = status === 'authenticated' && session?.user
 
@@ -17,7 +17,7 @@ export default function CartGrid() {
     return (
       <div className="flex flex-col gap-4">
         {Array.from({ length: 4 }).map((_, index) => (
-          <SkeletonCartItemCard key={index} />
+          <SkeletonWishlistItemCard key={index} />
         ))}
       </div>
     )
@@ -44,7 +44,7 @@ export default function CartGrid() {
     return (
       <div className="flex flex-col items-center justify-center py-8 px-4">
         <p className="text-center text-muted-foreground mb-4">
-          You need to be logged in to use the shopping cart.
+          You need to be logged in to use the wishlist.
         </p>
         <div className="flex gap-2">
           <Link href="/auth/signin">
@@ -60,8 +60,8 @@ export default function CartGrid() {
 
   return (
     <div className="flex flex-col gap-4 px-4 overflow-scroll">
-      {cartItems.map((item) => (
-        <CartItemCard key={item.id} item={item} />
+      {wishlistItems.map((item) => (
+        <WishlistItemCard key={item.id} item={item} />
       ))}
     </div>
   )

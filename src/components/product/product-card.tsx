@@ -98,7 +98,7 @@ function SkeletonProductCard(){
       <CardHeader>
         <CardAction>
           <Button variant={"ghost"} size={"icon"}>
-            <IconHeart className="size-6" />
+            <Skeleton className="size-6 " />
           </Button>
         </CardAction>
       </CardHeader>

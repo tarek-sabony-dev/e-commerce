@@ -8,6 +8,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
 import { Separator } from "../ui/separator"
 import Link from "next/link"
@@ -24,6 +25,7 @@ export function NavMain({
 }) {
 
   const pathName = usePathname()
+  const { toggleSidebar, isMobile } = useSidebar()
 
   return (
     <SidebarGroup>
@@ -33,7 +35,7 @@ export function NavMain({
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton isActive={pathName === item.url} tooltip={item.title} asChild>
-                <Link href={item.url}>
+                <Link href={item.url} onClick={() => isMobile ? toggleSidebar() : null}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
                 </Link>

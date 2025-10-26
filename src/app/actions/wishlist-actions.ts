@@ -105,3 +105,29 @@ export async function removeWishlistItem(userId: string, productId: number) {
     throw error
   }
 }
+
+export async function clearUserWishlist(userId: string) {
+  const session = await getServerSession(authOptions)
+  
+  // reject if no valid session
+  if (!session?.user.id) {
+    console.error('expired user sesstion')
+    throw new Error('Unauthorized')
+  }
+
+  // reject mismatched userId to prevent tampering
+  if (userId !== session.user.id) {
+    console.error('User id mismatch between session and provided userId')
+    throw new Error('Unauthorized')
+  }
+
+  try {
+    await db
+      .delete(wishlist)
+      .where(eq(wishlist.userId, session.user.id))
+    return { success: true }
+  } catch (error) {
+    console.error('Error clearing wishlist:', error)
+    throw error
+  }
+}

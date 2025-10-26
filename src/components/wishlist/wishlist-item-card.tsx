@@ -1,19 +1,21 @@
-'use client'
-
-import { CartItem } from "@/types/cart";
+import { useWishlistStore } from "@/stores/wishlist-store";
+import { WishlistItem } from "@/types/whishlist";
 import { Card, CardContent } from "../ui/card";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
-import { formatCents } from "@/lib/utils";
 import { Button } from "../ui/button";
-import { IconMinus, IconPlus, IconTrash } from "@tabler/icons-react";
-import { Input } from "../ui/input";
-import { useCartStore } from "@/stores/cart-store";
+import { IconTrash } from "@tabler/icons-react";
+import { formatCents } from "@/lib/utils";
 import { Skeleton } from "../ui/skeleton";
+import { useCartStore } from "@/stores/cart-store";
+import { Product } from "@/types/product";
 
-function CartItemCard({ item } : { item: CartItem }) {
-  const { removeCartItem, updateQuantity } = useCartStore()
-
+function WishlistItemCard({ item } : { item: WishlistItem }) {
+  const { removeWishlistItem } = useWishlistStore()
+  const { addCartItem, removeCartItem, cartItems } = useCartStore()
+  const product : Product = item.product as Product
+  const isInCart = cartItems.some(i => i.productId === product.id)
+  
   return (
     <Card className="py-4 lg:py-6">
       <CardContent className="px-4 lg:px-6">
@@ -27,34 +29,20 @@ function CartItemCard({ item } : { item: CartItem }) {
                 height={100}
               />
             </Badge>
-            <div className="w-full flex flex-col justify-between items-start gap-4">
+            <div className="w-full flex flex-col justify-center items-start gap-4">
               <div>
                 <h1 className="font-semibold">{item.product?.name}</h1>
                 <p className="opacity-50"><s>{formatCents(item.product?.price ?? 0)}</s> | {formatCents(item.product?.discountedPrice ?? item.product?.price ?? 0)}</p>
               </div>
-              <Badge variant={"outline"}>
-                <Button variant={"ghost"} size={"icon"} onClick={() => updateQuantity(item.productId, item.quantity - 1)}>
-                  <IconMinus />
-                </Button>
-                <Input
-                  className="text-center border-0 bg-transparent dark:bg-transparent shadow-none focus-visible:ring-0 focus-visible:border-transparent"
-                  size={2}
-                  value={item.quantity}
-                  onChange={(e) => {
-                  const next = parseInt(e.target.value, 10)
-                  updateQuantity(item.productId, Number.isNaN(next) ? 1 : next)
-                }} />
-                <Button variant={"ghost"} size={"icon"} onClick={() => updateQuantity(item.productId, item.quantity + 1)}>
-                  <IconPlus />
-                </Button>
-              </Badge>
             </div>
           </div>
           <div className="flex flex-col items-end gap-4">
-            <Button variant={"destructive"} size={"icon"} onClick={() => removeCartItem(item.productId)}>
+            <Button variant={"destructive"} size={"icon"} onClick={() => removeWishlistItem(item.productId)}>
               <IconTrash />
             </Button>
-            <h1 className="font-semibold">{formatCents(((item.product?.discountedPrice ?? item.product?.price ?? 0) * item.quantity))}</h1>
+            <Button onClick={() => isInCart ? removeCartItem(product.id) : addCartItem(product)} >
+              <span>{isInCart ? "Remove from Cart" : "Add to Cart"}</span>
+            </Button>
           </div>
         </div>
       </CardContent>
@@ -62,7 +50,7 @@ function CartItemCard({ item } : { item: CartItem }) {
   )
 }
 
-function SkeletonCartItemCard() {
+function SkeletonWishlistItemCard() {
   return (
     <Card className="py-4 lg:py-6">
       <CardContent className="px-4 lg:px-6">
@@ -74,13 +62,12 @@ function SkeletonCartItemCard() {
                 <Skeleton className="w-[120px] h-3 " />
                 <Skeleton className="w-[160px] h-3 " />
               </div>
-              <Skeleton className="w-40 h-10 " />
-
             </div>
           </div>
           <div className="flex flex-col items-end gap-4">
             <Skeleton className="size-9 " />
-            <Skeleton className="w-12 h-3 " />
+            <Skeleton className="w-24 h-9 " />
+            <Skeleton />
           </div>
         </div>
       </CardContent>
@@ -88,4 +75,4 @@ function SkeletonCartItemCard() {
   )
 }
 
-export { CartItemCard, SkeletonCartItemCard }
+export { WishlistItemCard, SkeletonWishlistItemCard }
