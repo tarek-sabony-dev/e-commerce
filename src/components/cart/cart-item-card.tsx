@@ -1,61 +1,71 @@
 'use client'
 
 import { CartItem } from "@/types/cart";
-import { Card, CardContent } from "../ui/card";
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { formatCents } from "@/lib/utils";
 import { Button } from "../ui/button";
-import { IconMinus, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconMinus, IconPlus, IconShoppingCartMinus, IconShoppingCartPlus, IconTrash } from "@tabler/icons-react";
 import { Input } from "../ui/input";
 import { useCartStore } from "@/stores/cart-store";
 import { Skeleton } from "../ui/skeleton";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 function CartItemCard({ item } : { item: CartItem }) {
   const { removeCartItem, updateQuantity } = useCartStore()
 
   return (
-    <Card className="py-4 lg:py-6">
-      <CardContent className="px-4 lg:px-6">
-        <div className="w-full flex justify-between items-start gap-4">
-          <div className="w-full flex flex-col lg:flex-row gap-4">
-            <Badge variant={"outline"}>
-              <Image
-                src={item.product?.imageUrls[0].url || '/fallback-image.png'}
-                alt={item.product?.imageUrls[0].key || "Product image"}
-                width={100}
-                height={100}
-              />
-            </Badge>
-            <div className="w-full flex flex-col justify-between items-start gap-4">
-              <div>
-                <h1 className="font-semibold">{item.product?.name}</h1>
-                <p className="opacity-50"><s>{formatCents(item.product?.price ?? 0)}</s> | {formatCents(item.product?.discountedPrice ?? item.product?.price ?? 0)}</p>
-              </div>
-              <Badge variant={"outline"}>
-                <Button variant={"ghost"} size={"icon"} onClick={() => updateQuantity(item.productId, item.quantity - 1)}>
-                  <IconMinus />
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          <h1 className="text-xl font-semibold">{item.product?.name}</h1>
+        </CardTitle>
+        <CardDescription>
+          <p><s>{formatCents(item.product?.price ?? 0)}</s> | {formatCents(item.product?.discountedPrice ?? item.product?.price ?? 0)}</p>
+        </CardDescription>
+        <CardAction>
+          <div className="flex flex-col items-end gap-3">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant={"outline"} size={"icon"} onClick={() => removeCartItem(item.productId)}>
+                  <IconShoppingCartMinus className="size-5" />
                 </Button>
-                <Input
-                  className="text-center border-0 bg-transparent dark:bg-transparent shadow-none focus-visible:ring-0 focus-visible:border-transparent"
-                  size={2}
-                  value={item.quantity}
-                  onChange={(e) => {
-                  const next = parseInt(e.target.value, 10)
-                  updateQuantity(item.productId, Number.isNaN(next) ? 1 : next)
-                }} />
-                <Button variant={"ghost"} size={"icon"} onClick={() => updateQuantity(item.productId, item.quantity + 1)}>
-                  <IconPlus />
-                </Button>
-              </Badge>
-            </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Remove from Cart</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
-          <div className="flex flex-col items-end gap-4">
-            <Button variant={"destructive"} size={"icon"} onClick={() => removeCartItem(item.productId)}>
-              <IconTrash />
+        </CardAction>
+      </CardHeader>
+      <CardContent className="flex flex-col lg:flex-row justify-between gap-4 ">
+        <Badge variant={"outline"}>
+          <Image
+            src={item.product?.imageUrls[0].url || '/fallback-image.png'}
+            alt={item.product?.imageUrls[0].key || "Product image"}
+            width={120}
+            height={120}
+          />
+        </Badge>
+        <div className="flex flex-col justify-end items-end gap-4">
+          <h1 className="text-xl font-semibold">{formatCents(((item.product?.discountedPrice ?? item.product?.price ?? 0) * item.quantity))}</h1>
+          <Badge variant={"outline"}>
+            <Button variant={"ghost"} size={"icon"} onClick={() => updateQuantity(item.productId, item.quantity - 1)}>
+              <IconMinus />
             </Button>
-            <h1 className="font-semibold">{formatCents(((item.product?.discountedPrice ?? item.product?.price ?? 0) * item.quantity))}</h1>
-          </div>
+            <Input
+              className="text-center border-0 bg-transparent dark:bg-transparent shadow-none focus-visible:ring-0 focus-visible:border-transparent"
+              size={2}
+              value={item.quantity}
+              onChange={(e) => {
+              const next = parseInt(e.target.value, 10)
+              updateQuantity(item.productId, Number.isNaN(next) ? 1 : next)
+            }} />
+            <Button variant={"ghost"} size={"icon"} onClick={() => updateQuantity(item.productId, item.quantity + 1)}>
+              <IconPlus />
+            </Button>
+          </Badge>
         </div>
       </CardContent>
     </Card>
@@ -64,24 +74,27 @@ function CartItemCard({ item } : { item: CartItem }) {
 
 function SkeletonCartItemCard() {
   return (
-    <Card className="py-4 lg:py-6">
-      <CardContent className="px-4 lg:px-6">
-        <div className="w-full flex justify-between items-start gap-4">
-          <div className="w-full flex flex-col lg:flex-row gap-4">
-            <Skeleton className="w-[100px] h-[100px] aspect-square " />
-            <div className="w-full flex flex-col justify-center items-start gap-4">
-              <div className="flex flex-col gap-2">
-                <Skeleton className="w-[120px] h-3 " />
-                <Skeleton className="w-[160px] h-3 " />
-              </div>
-              <Skeleton className="w-40 h-10 " />
-
-            </div>
-          </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          <Skeleton className="w-32 h-4 " />
+        </CardTitle>
+        <CardDescription>
+          <Skeleton className="w-12 h-4 " />
+        </CardDescription>
+        <CardAction>
           <div className="flex flex-col items-end gap-4">
-            <Skeleton className="size-9 " />
-            <Skeleton className="w-12 h-3 " />
+            <Button variant={"ghost"} size={"icon"}>
+              <Skeleton className="size-9" />
+            </Button>
           </div>
+        </CardAction>
+      </CardHeader>
+      <CardContent  className="flex flex-col lg:flex-row justify-between gap-4 ">
+        <Skeleton className="w-[120px] h-[120px] " />
+        <div className="flex flex-col justify-end items-end gap-4">
+          <Skeleton className="w-12 h-4 " />
+          <Skeleton className="w-40 h-11 " />
         </div>
       </CardContent>
     </Card>

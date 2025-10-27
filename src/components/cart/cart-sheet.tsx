@@ -19,6 +19,7 @@ import Link from "next/link"
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
 import { AlertCircleIcon } from "lucide-react"
 import { CartItemCard, SkeletonCartItemCard } from "./cart-item-card"
+import { formatCents } from "@/lib/utils"
 
 export function CartSheet() {
   const { cartItems, totalPrice, totalItems, error, isLoading } = useCartStore()
@@ -88,7 +89,7 @@ export function CartSheet() {
             </div>
             <SheetFooter>
               <div className="flex justify-between w-full">
-                <p className="font-semibold">Total cost is: ${totalPrice}</p>
+                <p className="font-semibold">Total cost is: {formatCents(totalPrice)}</p>
                 <p className="font-semibold">For {totalItems} items</p>
               </div>
               <Button type="submit" disabled={cartItems.length === 0}>Checkout</Button>

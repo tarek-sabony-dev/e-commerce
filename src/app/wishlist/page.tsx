@@ -1,11 +1,18 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import WishlistGrid from "@/components/wishlist/wishlist-grid";
 
 export default function WishlistPage() {
 
   return (
-    <div className="container mx-auto px-4 py-8 ">
-      <h1 className="text-3xl font-bold text-center mb-8">Wishlist</h1>
-      <WishlistGrid />
+    <div className="flex flex-col lg:flex-row gap-4 px-4 py-8">
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle className="text-3xl">Wishlist</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <WishlistGrid />
+        </CardContent>
+      </Card>
     </div>
   )
 }

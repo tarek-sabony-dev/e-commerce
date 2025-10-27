@@ -15,7 +15,7 @@ export default function WishlistGrid() {
 
   if (status === "loading" || isLoading) {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {Array.from({ length: 4 }).map((_, index) => (
           <SkeletonWishlistItemCard key={index} />
         ))}
@@ -59,7 +59,7 @@ export default function WishlistGrid() {
   }
 
   return (
-    <div className="flex flex-col gap-4 px-4 overflow-scroll">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {wishlistItems.map((item) => (
         <WishlistItemCard key={item.id} item={item} />
       ))}

@@ -4,18 +4,22 @@ import { useCartStore } from "@/stores/cart-store"
 import { useSession } from "next-auth/react"
 import { CartItemCard, SkeletonCartItemCard } from "./cart-item-card"
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
-import { IconAlertCircle, IconReload } from "@tabler/icons-react"
+import { IconAlertCircle, IconReload, IconX } from "@tabler/icons-react"
 import { Button } from "../ui/button"
 import Link from "next/link"
+import { Skeleton } from "../ui/skeleton"
 
 export default function CartGrid() {
-  const { cartItems, error, isLoading } = useCartStore()
+  const { cartItems, error, isLoading, clearCart } = useCartStore()
   const { data: session, status } = useSession()
   const isAuthenticated = status === 'authenticated' && session?.user
 
   if (status === "loading" || isLoading) {
     return (
       <div className="flex flex-col gap-4">
+        <Button variant={"ghost"} onClick={() => clearCart()} className="self-end p-0">
+          <Skeleton className="w-28 h-9 " />
+        </Button>
         {Array.from({ length: 4 }).map((_, index) => (
           <SkeletonCartItemCard key={index} />
         ))}
@@ -59,7 +63,11 @@ export default function CartGrid() {
   }
 
   return (
-    <div className="flex flex-col gap-4 px-4 overflow-scroll">
+    <div className="flex flex-col gap-4">
+      <Button variant={"destructive"} onClick={() => clearCart()} className="self-end">
+        <IconX />
+        Clear cart
+      </Button>
       {cartItems.map((item) => (
         <CartItemCard key={item.id} item={item} />
       ))}
