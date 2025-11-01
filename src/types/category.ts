@@ -1,7 +1,9 @@
+import { ImageObject } from "./general-types"
+
 export interface Category {
   id: number
   name: string
-  imageUrl: string
-  createdAt: string
-  updatedAt: string
+  imageUrl: ImageObject
+  createdAt: Date
+  updatedAt: Date
 }

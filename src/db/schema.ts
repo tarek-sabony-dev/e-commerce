@@ -1,3 +1,4 @@
+import { ImageObject } from '@/types/general-types';
 import {
   integer,
   jsonb,
@@ -9,7 +10,6 @@ import {
   varchar,
   primaryKey,
 } from 'drizzle-orm/pg-core';
-import type { ImageObject } from '@/types/product';
 
 // NextAuth required tables
 export const accounts = pgTable('accounts', {
@@ -58,7 +58,7 @@ export const users = pgTable('users', {
 export const categories = pgTable('categories', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
-  imageUrl: jsonb('image_url'),
+  imageUrl: jsonb('image_url').$type<ImageObject>().notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });

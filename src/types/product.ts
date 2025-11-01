@@ -1,7 +1,4 @@
-export interface ImageObject {
-  key: string
-  url: string
-}
+import { ImageObject } from "./general-types"
 
 export interface Product {
   id: number
