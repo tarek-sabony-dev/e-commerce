@@ -2,19 +2,15 @@ import ProductGrid from "@/components/product/products-grid";
 import { GetCategories, GetProducts } from "@/app/actions/actions";
 
 interface ShopPageProps {
-  searchParams: {
-    page?: string;
-    category?: string;
-  }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
-export const revalidate = 10
-
 export default async function ShopPage({ searchParams }: ShopPageProps) {
-  const params = searchParams
-  const currentPage = parseInt(params.page || '1')
-  const categoryId = params.category ? parseInt(params.category) : null
-  const limit = 12
+  const { page, category } = await searchParams
+  
+  const currentPage = Number(page ?? '1') || 1
+  const categoryId = category ? Number(category) : null
+  const limit = 1
 
   const [categories, productsData] = await Promise.all([
     GetCategories(),
