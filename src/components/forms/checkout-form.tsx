@@ -8,7 +8,7 @@ import { Button } from "../ui/button"
 import { Separator } from "../ui/separator"
 
 export default function CheckoutForm() {
-  const { totalItems, totalPrice } = useCartStore()
+  const { totalCartItems, totalPrice } = useCartStore()
 
   return (
     <div className="flex flex-col gap-4">
@@ -17,7 +17,7 @@ export default function CheckoutForm() {
       </Label>
       <Input />
       <Separator />
-      <div>Total items: {totalItems}</div>
+      <div>Total items: {totalCartItems}</div>
       <div>Discount: $0</div>
       <div>Total price: {formatCents(totalPrice)}</div>
       <Separator />

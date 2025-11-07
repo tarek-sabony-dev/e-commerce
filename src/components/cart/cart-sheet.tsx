@@ -20,9 +20,10 @@ import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
 import { AlertCircleIcon } from "lucide-react"
 import { CartItemCard, SkeletonCartItemCard } from "./cart-item-card"
 import { formatCents } from "@/lib/utils"
+import { Badge } from "../ui/badge"
 
 export function CartSheet() {
-  const { cartItems, totalPrice, totalItems, error, isLoading } = useCartStore()
+  const { cartItems, totalPrice, totalCartItems, error, isLoading } = useCartStore()
   const { data: session, status } = useSession()
   const isAuthenticated = status === 'authenticated' && session?.user
   const isMobile = useIsMobile()
@@ -30,8 +31,11 @@ export function CartSheet() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-      <Button variant={"outline"} size={"icon"}>
+      <Button className="relative" variant={"outline"} size={"icon"}>
         <IconShoppingCart className="size-6" />
+        <Badge className="absolute -top-2 -right-2 rounded-full border-" variant={"outline"} >
+          {totalCartItems}
+        </Badge>
       </Button>
       </SheetTrigger>
       <SheetContent side={isMobile? "bottom" : "right"} className={isMobile? 'h-[90%] overflow-scroll' : ''}>
@@ -90,7 +94,7 @@ export function CartSheet() {
             <SheetFooter>
               <div className="flex justify-between w-full">
                 <p className="font-semibold">Total cost is: {formatCents(totalPrice)}</p>
-                <p className="font-semibold">For {totalItems} items</p>
+                <p className="font-semibold">For {totalCartItems} items</p>
               </div>
               <Button type="submit" disabled={cartItems.length === 0}>Checkout</Button>
               <SheetClose asChild>

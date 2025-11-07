@@ -6,7 +6,7 @@ import { create } from "zustand"
 interface WishlistStore {
   // state
   wishlistItems: WishlistItem[]
-  totalItems: number
+  totalWishlistItems: number
   userId: string | null
   isLoading: boolean
   error: string | null
@@ -31,7 +31,7 @@ interface WishlistStore {
 export const useWishlistStore = create<WishlistStore>()((set, get) => ({
   // initial state
   wishlistItems: [],
-  totalItems: 0,
+  totalWishlistItems: 0,
   userId: null,
   isLoading: false,
   error: null,
@@ -121,7 +121,7 @@ export const useWishlistStore = create<WishlistStore>()((set, get) => ({
       return
     }
     const previousItems = [...get().wishlistItems]
-    set({ wishlistItems: [], totalItems: 0 })
+    set({ wishlistItems: [], totalWishlistItems: 0 })
 
     // Sync to database (optimistic update)
     clearUserWishlist(userId).catch(error => {
@@ -135,16 +135,16 @@ export const useWishlistStore = create<WishlistStore>()((set, get) => ({
 
   calculateTotals: () => {
     const items = get().wishlistItems
-    const totalItems = items.length
+    const totalWishlistItems = items.length
 
-    set({ totalItems })
+    set({ totalWishlistItems })
   },
 
   setUserId: (userId: string | null) => {
     set({ userId })
     if (!userId) {
       // Clear cart when user logs out
-      set({ wishlistItems: [], totalItems: 0, error: null })
+      set({ wishlistItems: [], totalWishlistItems: 0, error: null })
     }
   },
 

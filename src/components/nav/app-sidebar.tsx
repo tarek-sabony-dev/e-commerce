@@ -21,38 +21,46 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { useCartStore } from "@/stores/cart-store"
+import { useWishlistStore } from "@/stores/wishlist-store"
 
-const data = {
-  navMain: [
-    {
-      title: "Popular",
-      url: "/",
-      icon: IconChartBarPopular,
-    },
-    {
-      title: "Shop",
-      url: "/shop",
-      icon: IconShoppingBag,
-    },
-    {
-      title: "Wishlist",
-      url: "/wishlist",
-      icon: IconHeart,
-    },
-    {
-      title: "Cart",
-      url: "/cart",
-      icon: IconShoppingCart,
-    },
-    {
-      title: "Contacts",
-      url: "/contacts",
-      icon: IconPhone,
-    },
-  ],
-}
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { totalCartItems } = useCartStore()
+  const { totalWishlistItems } = useWishlistStore()
+
+  const data = {
+    navMain: [
+      {
+        title: "Popular",
+        url: "/",
+        icon: IconChartBarPopular,
+      },
+      {
+        title: "Shop",
+        url: "/shop",
+        icon: IconShoppingBag,
+      },
+      {
+        title: "Wishlist",
+        url: "/wishlist",
+        icon: IconHeart,
+        count: totalWishlistItems
+  
+      },
+      {
+        title: "Cart",
+        url: "/cart",
+        icon: IconShoppingCart,
+        count: totalCartItems
+      },
+      {
+        title: "Contacts",
+        url: "/contacts",
+        icon: IconPhone,
+      },
+    ],
+  }
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -64,10 +72,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="#">
-                  <IconBrandNextjs className="!size-7" />
-                  <span className="text-base font-semibold ">
-                    NextMerce
-                  </span>
+                <IconBrandNextjs className="!size-7" />
+                <span className="text-base font-semibold ">
+                  NextMerce
+                </span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

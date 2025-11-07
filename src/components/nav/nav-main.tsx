@@ -21,6 +21,7 @@ export function NavMain({
     title: string
     url: string
     icon?: Icon
+    count?: number
   }[]
 }) {
 
@@ -38,6 +39,7 @@ export function NavMain({
                 <Link href={item.url} onClick={() => isMobile ? toggleSidebar() : null}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
+                  <span className="absolute right-2">{item.count}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

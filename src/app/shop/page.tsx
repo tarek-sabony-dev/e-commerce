@@ -6,27 +6,31 @@ interface ShopPageProps {
 }
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
-  const { page, category } = await searchParams
+  const { page, category, min, max } = await searchParams
   
-  const currentPage = Number(page ?? '1') || 1
+  const currentPage = page ? Number(page ?? '1') : 1
   const categoryId = category ? Number(category) : null
-  const limit = 1
+  const minPrice = min ? Number(min ?? '0') : 0
+  const maxPrice = max ? Number(max ?? '0') : 0
+  const limit = 12
 
   const [categories, productsData] = await Promise.all([
     GetCategories(),
-    GetProducts(currentPage, limit, categoryId)
+    GetProducts(currentPage, limit, categoryId, minPrice, maxPrice)
   ])
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 ">
       <h1 className="text-3xl font-bold text-center mb-8">Shop</h1>
       <ProductGrid 
         categories={categories}
-        initialProducts={productsData.products}
-        initialTotalPages={productsData.totalPages}
-        initialTotalCount={productsData.totalCount}
+        products={productsData.products}
+        totalPages={productsData.totalPages}
+        totalCount={productsData.totalCount}
         currentPage={currentPage}
         categoryId={categoryId}
+        maxPrice={maxPrice}
+        minPrice={minPrice}
       />
     </div>
   )

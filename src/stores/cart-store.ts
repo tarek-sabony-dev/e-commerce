@@ -12,7 +12,7 @@ import {
 interface CartStore {
   // state
   cartItems: CartItem[]
-  totalItems: number
+  totalCartItems: number
   totalPrice: number
   userId: string | null
   isLoading: boolean
@@ -39,7 +39,7 @@ interface CartStore {
 export const useCartStore = create<CartStore>()((set, get) => ({
   // initial state
   cartItems: [],
-  totalItems: 0,
+  totalCartItems: 0,
   totalPrice: 0,
   userId: null,
   isLoading: false,
@@ -170,7 +170,7 @@ export const useCartStore = create<CartStore>()((set, get) => ({
     }
 
     const previousItems = [...get().cartItems]
-    set({ cartItems: [], totalItems: 0, totalPrice: 0 })
+    set({ cartItems: [], totalCartItems: 0, totalPrice: 0 })
     
     // Sync to database (optimistic update)
     clearUserCart(userId).catch((error) => {
@@ -184,20 +184,20 @@ export const useCartStore = create<CartStore>()((set, get) => ({
 
   calculateTotals: () => {
     const { cartItems } = get()
-    const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0)
+    const totalCartItems = cartItems.reduce((sum, item) => sum + item.quantity, 0)
     const totalPrice = cartItems.reduce((sum, item) => {
       const priceCents = item.product?.discountedPrice ?? item.product?.price ?? 0
       return sum + (priceCents * item.quantity)
     }, 0)
     
-    set({ totalItems, totalPrice })
+    set({ totalCartItems, totalPrice })
   },
 
   setUserId: (userId: string | null) => {
     set({ userId })
     if (!userId) {
       // Clear cart when user logs out
-      set({ cartItems: [], totalItems: 0, totalPrice: 0, error: null })
+      set({ cartItems: [], totalCartItems: 0, totalPrice: 0, error: null })
     }
   },
 
