@@ -1,5 +1,6 @@
 import ProductGrid from "@/components/product/products-grid";
-import { GetCategories, GetProducts } from "@/app/actions/actions";
+import { GetCategories } from "@/app/actions/actions";
+import { GetProducts } from "../actions/product-actions";
 
 interface ShopPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>

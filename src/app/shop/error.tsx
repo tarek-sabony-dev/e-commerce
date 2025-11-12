@@ -3,6 +3,7 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { IconAlertCircle, IconReload } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function ShopError({
   error,
@@ -11,6 +12,8 @@ export default function ShopError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const router = useRouter();
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-center mb-8">Shop</h1>
@@ -22,7 +25,13 @@ export default function ShopError({
         <AlertDescription>
           <p>Check your network connection and try again.</p>
         </AlertDescription>
-        <Button onClick={reset} variant="secondary">
+        <Button
+          onClick={() => {
+            window.location.reload()
+            reset();
+          }}
+          variant="secondary"
+        >
           <IconReload />
           Try Again
         </Button>

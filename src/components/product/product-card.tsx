@@ -1,52 +1,37 @@
-'use client'
-
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { IconHeart, IconHeartFilled, IconStar, IconStarFilled, IconStarHalfFilled } from "@tabler/icons-react";
+import { IconStar, IconStarFilled, IconStarHalfFilled } from "@tabler/icons-react";
 import Image from "next/image";
 import { Separator } from "../ui/separator";
 import { formatCents } from "@/lib/utils";
 import { Badge } from "../ui/badge";
 import { Product } from "@/types/product";
-import { useCartStore } from "@/stores/cart-store";
 import { Skeleton } from "../ui/skeleton";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useWishlistStore } from "@/stores/wishlist-store";
+import { AddToCartButton, AddToWishlistButton } from "./product-action-buttons";
 
 function ProductCard({ product } : { product: Product }) {
-  const { addCartItem, removeCartItem, cartItems } = useCartStore()
-  const { addWishlistItem, removeWishlistItem, wishlistItems } = useWishlistStore()
-  const { data: session, status } = useSession()
-  const isInCart = cartItems.some(item => item.productId === product.id)
-  const isInWishlist = wishlistItems.some(item => item.productId === product.id)
   const thumdnailImage = product.imageUrls?.[0]
-  const isAuthenticated = status === 'authenticated' && session?.user
 
   return (
     <>
       <Card className="w-full h-full rounded-2xl">
         <CardHeader>
           <CardAction>
-            <Button variant={"ghost"} size={"icon"} onClick={() => isInWishlist ? removeWishlistItem(product.id) : addWishlistItem(product)}>
-              {!isInWishlist ? (
-                <IconHeart className="size-6" />
-              ) : (
-                <IconHeartFilled className="size-6" />
-              )
-              }
-            </Button>
+            <AddToWishlistButton product={product} />
           </CardAction>
         </CardHeader>
         <CardContent>
           <Separator/>
-          <Image
-            width={400}
-            height={400}
-            src={thumdnailImage?.url ?? "/smartphone.png"}
-            alt={thumdnailImage?.key ?? product.name}
-            className="w-full hover:scale-105 transition-all"
-          />
+          <Link href={`/product/${product.id}`}>
+            <Image
+              width={400}
+              height={400}
+              src={thumdnailImage?.url ?? "/smartphone.png"}
+              alt={thumdnailImage?.key ?? product.name}
+              className="w-full hover:scale-105 transition-all"
+            />
+          </Link>
           <Separator/>
         </CardContent>
         <CardFooter className="flex flex-col justify-center items-start gap-4 ">
@@ -65,17 +50,7 @@ function ProductCard({ product } : { product: Product }) {
             </Badge>
           </div>
           <div className="w-full flex justify-between">
-            {isAuthenticated ? (
-              <Button onClick={() => isInCart ? removeCartItem(product.id) : addCartItem(product)}>
-                <span>{isInCart ? "Remove from Cart" : "Add to Cart"}</span>
-              </Button>
-            ) : (
-              <Link href="/auth/signin">
-                <Button>
-                  <span>Add to Cart</span>
-                </Button>
-              </Link>
-            )}
+            <AddToCartButton product={product} />
             <Badge variant={"outline"} className="flex gap-2">
               <span>
                 <s>{formatCents(product.price)}</s>

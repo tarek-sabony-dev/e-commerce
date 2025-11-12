@@ -9,7 +9,6 @@ import { Product } from "@/types/product"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Slider } from "../ui/slider"
 import { useState } from "react"
-import { useIsMobile } from "@/hooks/use-mobile"
 import { IconFilter2, IconSearch } from "@tabler/icons-react"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet"
 import { formatCents } from "@/lib/utils"
@@ -30,7 +29,6 @@ export default function ProductGrid({ categories, products, totalPages, totalCou
   const [priceRange, setPriceRange] = useState([minPrice || 0, maxPrice || 1000])
   const searchParams = useSearchParams()
   const router = useRouter()
-  const isMobile = useIsMobile()
 
   const handleCategoryChange = (selectedCategoryId: number | null) => {
     // Prevent re-selecting the already selected category
@@ -172,11 +170,6 @@ export default function ProductGrid({ categories, products, totalPages, totalCou
                   </div>
                 </CardContent>
               </Card>
-            </div>
-            <div className="flex flex-col gap-8">
-              <div>
-                
-              </div>
             </div>
           </SheetContent>
         </Sheet>          
