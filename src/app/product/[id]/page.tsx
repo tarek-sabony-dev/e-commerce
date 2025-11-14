@@ -1,5 +1,6 @@
 import { GetProductById } from "@/app/actions/product-actions"
 import { AddToCartButton, AddToWishlistButton } from "@/components/product/product-action-buttons"
+import ProductImages from "@/components/product/product-images"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,10 +17,11 @@ interface ProductDetailsPageProps {
 export default async function ProductDetailsPage ({ params } : ProductDetailsPageProps) {
   const { id } = await params
   const [product] = await GetProductById(Number(id))
+
   
   return (
     <div className="container mx-auto px-4 py-8 ">
-      <Card className="w-full h-full rounded-2xl">
+      <Card className="w-full h-full rounded-2xl flex flex-col">
         <CardHeader>
           <CardAction>
             <Button variant={"ghost"} size={"icon"} asChild>
@@ -29,55 +31,9 @@ export default async function ProductDetailsPage ({ params } : ProductDetailsPag
             </Button>
           </CardAction>
         </CardHeader>
-        <div className="flex flex-col lg:flex-row gap-4">
+        <div className="flex flex-col lg:flex-row gap-4 flex-1">
           <CardContent className="flex flex-col gap-2">
-            <Badge variant={"outline"}>
-              <Image
-                width={400}
-                height={400}
-                src={product.imageUrls[0].url}
-                alt={product.imageUrls[0].key ?? product.name}
-                className="w-full aspect-square hover:scale-105 transition-all"
-              />
-            </Badge>
-            <div className="flex gap-2 flex-wrap">
-              <Badge variant={"outline"}>
-                <Image
-                  width={50}
-                  height={400}
-                  src={product.imageUrls[0].url}
-                  alt={product.imageUrls[0].key ?? product.name}
-                  className="w-full aspect-square hover:scale-105 transition-all"
-                />
-              </Badge>
-              <Badge variant={"outline"}>
-                <Image
-                  width={50}
-                  height={400}
-                  src={product.imageUrls[0].url}
-                  alt={product.imageUrls[0].key ?? product.name}
-                  className="w-full aspect-square hover:scale-105 transition-all"
-                />
-              </Badge>
-              <Badge variant={"outline"}>
-                <Image
-                  width={50}
-                  height={400}
-                  src={product.imageUrls[0].url}
-                  alt={product.imageUrls[0].key ?? product.name}
-                  className="w-full aspect-square hover:scale-105 transition-all"
-                />
-              </Badge>
-              <Badge variant={"outline"}>
-                <Image
-                  width={50}
-                  height={400}
-                  src={product.imageUrls[0].url}
-                  alt={product.imageUrls[0].key ?? product.name}
-                  className="w-full aspect-square hover:scale-105 transition-all"
-                />
-              </Badge>
-            </div>
+            <ProductImages imageUrls={product.imageUrls} />
           </CardContent>
           <CardFooter className="w-full flex flex-col justify-start items-start gap-4">
             <div className="flex flex-col gap-1">
@@ -110,11 +66,13 @@ export default async function ProductDetailsPage ({ params } : ProductDetailsPag
                 </span>
               </Badge>
             </div>
-            <Badge variant={"outline"} className="flex p-4 gap-4 self-end">
-              <AddToCartButton product={product} />
-              <AddToWishlistButton product={product} />
-            </Badge>
           </CardFooter>
+        </div>
+        <div className="flex justify-end px-6 pb-6">
+          <Badge variant={"outline"} className="flex p-4 gap-4">
+            <AddToCartButton product={product} />
+            <AddToWishlistButton product={product} />
+          </Badge>
         </div>
       </Card>
     </div>
