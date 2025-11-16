@@ -7,7 +7,6 @@ import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader,
 import { Separator } from "@/components/ui/separator"
 import { formatCents } from "@/lib/utils"
 import { IconArrowBack, IconStar, IconStarFilled, IconStarHalfFilled } from "@tabler/icons-react"
-import Image from "next/image"
 import Link from "next/link"
 
 interface ProductDetailsPageProps {
