@@ -1,4 +1,5 @@
 import { ImageObject } from '@/types/general-types';
+import { sql, SQL } from 'drizzle-orm';
 import {
   integer,
   jsonb,
@@ -9,7 +10,15 @@ import {
   timestamp,
   varchar,
   primaryKey,
+  index,
+  customType,
 } from 'drizzle-orm/pg-core';
+
+const tsVector = customType<{ data: string }>({
+  dataType() {
+    return "tsvector";
+  },
+});
 
 // NextAuth required tables
 export const accounts = pgTable('accounts', {
@@ -76,7 +85,17 @@ export const products = pgTable('products', {
   rating: numeric('rating', { precision: 3, scale: 2 }).default('0').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
-});
+  
+  // Generated column for full-text search
+  searchVector: tsVector('searchVector')
+    .generatedAlwaysAs((): SQL =>
+      sql`setweight(to_tsvector('english', coalesce(${products.name}, '')), 'A') || 
+          setweight(to_tsvector('english', coalesce(${products.description}, '')), 'B')`
+    ),
+}, (table) => [
+  // GIN index for fast full-text search
+  index('products_search_idx').using('gin', table.searchVector),
+]);
 
 // cart_items
 export const cartItems = pgTable('cart_items', {

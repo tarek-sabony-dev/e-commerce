@@ -2,7 +2,7 @@
 
 import { db } from "@/db/db"
 import { products } from "@/db/schema"
-import { eq, count, and, between, gte, lte } from "drizzle-orm"
+import { eq, count, and, between, gte, lte, sql } from "drizzle-orm"
 
 export async function GetProductsCount(
   categoryId: number | null = null,
@@ -41,11 +41,16 @@ export async function GetProducts(
   limit: number = 12,
   categoryId: number | null = null,
   minPrice: number = 0,
-  maxPrice: number = 0
+  maxPrice: number = 0,
+  searchQuery: string
 ) {
   try {
     const offset = (page - 1) * limit
     const conditions = []
+
+    if (searchQuery.trim().length !== 0) {
+      conditions.push(sql`${products.searchVector} @@ websearch_to_tsquery('english', ${searchQuery})`)
+    }
 
     if (categoryId !== null) {
       conditions.push(eq(products.categoryId, categoryId))

@@ -37,7 +37,7 @@ function ProductCard({ product } : { product: Product }) {
         <CardFooter className="flex flex-col justify-center items-start gap-4 ">
           <div className="flex flex-col justify-center items-start gap-1">
             <h1 className="font-semibold">{product.name}</h1>
-            <p className="opacity-50">{product.description}</p>
+            <p className="opacity-50 line-clamp-2">{product.description}</p>
           </div>
           <div className="flex items-center gap-1">
             <IconStarFilled size={16} />

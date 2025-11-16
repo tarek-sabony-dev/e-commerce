@@ -7,17 +7,18 @@ interface ShopPageProps {
 }
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
-  const { page, category, min, max } = await searchParams
+  const { page, category, min, max, q } = await searchParams
   
   const currentPage = page ? Number(page ?? '1') : 1
   const categoryId = category ? Number(category) : null
   const minPrice = min ? Number(min ?? '0') : 0
   const maxPrice = max ? Number(max ?? '0') : 0
+  const searchQuery = q ? String(q) : ""
   const limit = 12
 
   const [categories, productsData] = await Promise.all([
     GetCategories(),
-    GetProducts(currentPage, limit, categoryId, minPrice, maxPrice)
+    GetProducts(currentPage, limit, categoryId, minPrice, maxPrice, searchQuery)
   ])
 
   return (
@@ -32,6 +33,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         categoryId={categoryId}
         maxPrice={maxPrice}
         minPrice={minPrice}
+        searchQuery={searchQuery}
       />
     </div>
   )
