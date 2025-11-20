@@ -101,3 +101,25 @@ export async function GetProductById(id: number) {
     throw error
   }
 }
+
+export async function GetSearchSuggestions(query: string, limit: number = 5) {
+  try {
+    if (!query || query.trim().length === 0) {
+      return []
+    }
+
+    const suggestions = await db
+      .select({
+        id: products.id,
+        name: products.name,
+      })
+      .from(products)
+      .where(sql`${products.searchVector} @@ websearch_to_tsquery('english', ${query})`)
+      .limit(limit)
+
+    return suggestions
+  } catch (error) {
+    console.error('Error fetching search suggestions:', error)
+    return []
+  }
+}

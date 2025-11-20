@@ -17,6 +17,7 @@ import z from "zod"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Field, FieldError } from "../ui/field"
+import SearchAutocomplete from "./search-with-suggestions"
 
 interface ProductGridProps {
   categories: Category[]
@@ -30,20 +31,12 @@ interface ProductGridProps {
   searchQuery: string
 }
 
-const formSchema = z.object({
-  query: z.string().max(255, "Long search quey.")
-})
+
 
 export default function ProductGrid({ categories, products, totalPages, totalCount, currentPage, categoryId, minPrice, maxPrice, searchQuery }: ProductGridProps){
   const [priceRange, setPriceRange] = useState([minPrice || 0, maxPrice || 100000])
   const searchParams = useSearchParams()
   const router = useRouter()
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      query: searchQuery
-    },
-  })
 
   const handleCategoryChange = (selectedCategoryId: number | null) => {
     // Prevent re-selecting the already selected category
@@ -96,50 +89,11 @@ export default function ProductGrid({ categories, products, totalPages, totalCou
     router.push(`/shop?${params.toString()}`)
   }
 
-  // for searching products
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    const params = new URLSearchParams(searchParams.toString())
-    const q = data.query
-
-    if (!q || q.trim().length === 0) {
-      params.delete('q')
-    } else {
-      params.set('q', q)
-    }
-
-    router.push(`/shop?${params.toString()}`)
-  }
 
   return(
     <Card>
       <CardHeader className="flex justify-between items-center gap-6 flex-wrap">
-        <div className="flex gap-2">
-          <form id="search-query-form" onSubmit={form.handleSubmit(onSubmit)} className="flex gap-2">
-            <Controller
-              name="query"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <Input
-                    {...field}
-                    id="search-query"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Search products"
-                    autoComplete="off"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                  
-                </Field>
-              )}
-            />
-            <Button variant={"secondary"} type="submit" form="search-query-form">
-              <IconSearch />
-              <span className="hidden lg:block">Search</span>
-            </Button>
-          </form>
-        </div>
+        <SearchAutocomplete searchQuery={searchQuery} />
         <Sheet>
           <SheetTrigger asChild>
             <Button variant={"secondary"}>

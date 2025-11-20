@@ -18,13 +18,6 @@ export function SiteHeader() {
           />
         </div>
         <div className="flex items-center gap-4">
-          <div className="flex gap-2">
-            <Input placeholder="Search products" />
-            <Button variant={"secondary"}>
-              <IconSearch />
-              <span className="hidden lg:block">Search</span>
-            </Button>
-          </div>
           <CartSheet />
         </div>
       </div>
