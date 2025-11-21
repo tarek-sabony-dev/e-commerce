@@ -45,24 +45,42 @@ export default async function ProductDetailsPage ({ params } : ProductDetailsPag
             </div>
             <Separator orientation="horizontal" />
             <div className="flex items-center gap-1">
-              <IconStarFilled size={20} />
-              <IconStarFilled size={20} />
-              <IconStarFilled size={20} />
-              <IconStarHalfFilled size={20} />
-              <IconStar size={20} />
+              {Array.from({ length: 5 }, (_, index) => {
+                const rating = Number(product.rating);
+                if (index < Math.floor(rating)) {
+                  return <IconStarFilled key={index} size={20} />;
+                } else if (index === Math.floor(rating) && rating % 1 !== 0) {
+                  return <IconStarHalfFilled key={index} size={20} />;
+                } else {
+                  return <IconStar key={index} size={20} />;
+                }
+              })}
               <Badge variant={"outline"}>
-                <p className="text-base">{product.rating}</p>
+                <p className="text-base">
+                  {Number(product.rating)}
+                </p>
               </Badge>
             </div>
             <div className="w-full flex justify-between">
               <Badge variant={"outline"} className="flex p-4 gap-4">
-                <span className="font-semibold text-4xl">
-                  <s>{formatCents(product.price)}</s>
-                </span>
-                <Separator orientation="vertical" />
-                <span className="font-semibold text-4xl">
-                  {formatCents(product.discountedPrice ?? product.price)}
-                </span>
+                <span className="text-4xl">
+                {product.discountedPrice &&
+                  <s>
+                    {formatCents(product.price)}
+                  </s>
+                }
+                {!product.discountedPrice &&
+                  formatCents(product.price)
+                }
+              </span>
+              {product.discountedPrice &&
+                <>  
+                  <Separator orientation="vertical" />
+                  <span className="text-4xl">
+                    {formatCents(product.discountedPrice)}
+                  </span>
+                </>
+              }
               </Badge>
             </div>
           </CardFooter>

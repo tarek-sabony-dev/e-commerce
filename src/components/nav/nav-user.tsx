@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { signIn, signOut, useSession } from "next-auth/react"
 import { Skeleton } from "../ui/skeleton"
+import Link from "next/link"
 
 export function NavUser() {
   // fetch user data
@@ -84,13 +85,17 @@ export function NavUser() {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <IconUserCircle />
-              Account
+            <DropdownMenuItem asChild>
+              <Link href="/user/account">
+                <IconUserCircle />
+                Account
+              </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <IconSettings />
-              Settings
+            <DropdownMenuItem asChild>
+              <Link href="/user/settings">
+                <IconSettings />
+                Settings
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />

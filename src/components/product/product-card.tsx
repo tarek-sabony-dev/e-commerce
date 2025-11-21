@@ -40,25 +40,41 @@ function ProductCard({ product } : { product: Product }) {
             <p className="opacity-50 line-clamp-2">{product.description}</p>
           </div>
           <div className="flex items-center gap-1">
-            <IconStarFilled size={16} />
-            <IconStarFilled size={16} />
-            <IconStarFilled size={16} />
-            <IconStarHalfFilled size={16} />
-            <IconStar size={16} />
+            {Array.from({ length: 5 }, (_, index) => {
+              const rating = Number(product.rating);
+              if (index < Math.floor(rating)) {
+                return <IconStarFilled key={index} size={16} />;
+              } else if (index === Math.floor(rating) && rating % 1 !== 0) {
+                return <IconStarHalfFilled key={index} size={16} />;
+              } else {
+                return <IconStar key={index} size={16} />;
+              }
+            })}
             <Badge variant={"outline"}>
-              {product.rating}
+              {Number(product.rating)}
             </Badge>
           </div>
           <div className="w-full flex justify-between">
             <AddToCartButton product={product} />
             <Badge variant={"outline"} className="flex gap-2">
               <span>
-                <s>{formatCents(product.price)}</s>
+                {product.discountedPrice &&
+                  <s>
+                    {formatCents(product.price)}
+                  </s>
+                }
+                {!product.discountedPrice &&
+                  formatCents(product.price)
+                }
               </span>
-              <Separator orientation="vertical" />
-              <span>
-                {formatCents(product.discountedPrice ?? product.price)}
-              </span>
+              {product.discountedPrice &&
+                <>  
+                  <Separator orientation="vertical" />
+                  <span>
+                    {formatCents(product.discountedPrice)}
+                  </span>
+                </>
+              }
             </Badge>
           </div>
         </CardFooter>
