@@ -27,6 +27,7 @@ function ProductCard({ product } : { product: Product }) {
             <Image
               width={400}
               height={400}
+              loading={"lazy"}
               src={thumdnailImage?.url ?? "/smartphone.png"}
               alt={thumdnailImage?.key ?? product.name}
               className="w-full hover:scale-105 transition-all"

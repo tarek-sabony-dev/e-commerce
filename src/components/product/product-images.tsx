@@ -4,10 +4,12 @@ import { ImageObject } from "@/types/general-types"
 import Image from "next/image"
 import { Badge } from "../ui/badge"
 import { useState } from "react"
+import { Spinner } from "../ui/spinner"
 
 export default function ProductImages ({ imageUrls } : { imageUrls: ImageObject[] }) {
   const [thumdnailImage, setThumdnailImage] = useState(imageUrls?.[0])
-  
+  const [loading, setLoding] = useState(true)
+
   return (
     <>
       <Badge variant={"outline"}>
@@ -27,8 +29,12 @@ export default function ProductImages ({ imageUrls } : { imageUrls: ImageObject[
               height={400}
               src={img.url}
               alt={img.key}
+              onLoadingComplete={() => setLoding(false)}
               className="w-full aspect-square hover:scale-105 transition-all"
               />
+              {loading && (
+                <Spinner className="absolute size-12" />
+              )}
           </Badge>
         ))}
       </div>
